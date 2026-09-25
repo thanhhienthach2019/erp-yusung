@@ -1,9 +1,0 @@
-{
-  "name": "erp-yusung",
-  "version": "2.0.0",
-  "private": true,
-  "scripts": {
-    "build:web": "cd frontend && npx expo export -p web",
-    "build": "cd frontend && npx expo export -p web"
-  }
-}
