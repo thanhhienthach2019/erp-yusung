@@ -17,7 +17,9 @@ class ProductionPlan(Base):
     target_qty = Column(Integer, default=0, nullable=False) # Kế hoạch
     produced_qty = Column(Integer, default=0, nullable=False) # Đã làm
     remain_qty = Column(Integer, default=0, nullable=False) # Còn lại
+    sizes_breakdown = Column(JSON, default=dict) # 29 standard sizes JSON
     fixed_etd = Column(String(50), nullable=True)
+    stage = Column(String(20), default="PRD") # PRD, CLS
     status = Column(String(30), default="Pending") # Pending, InProgress, Completed
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

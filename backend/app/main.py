@@ -7,7 +7,7 @@ from app.core.config import settings
 from app.core.database import engine, Base
 from app.core.redis import redis_service
 from app.core.rabbitmq import rabbitmq_service
-from app.api import auth, barcode, planning, websocket
+from app.api import auth, barcode, planning, websocket, orders, dashboard
 from app.api.websocket import start_redis_listener
 
 @asynccontextmanager
@@ -62,6 +62,8 @@ app.add_middleware(
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["Authentication"])
 app.include_router(barcode.router, prefix=f"{settings.API_V1_STR}/barcode", tags=["Barcode Production"])
 app.include_router(planning.router, prefix=f"{settings.API_V1_STR}/planning", tags=["Production Planning"])
+app.include_router(orders.router, prefix=f"{settings.API_V1_STR}", tags=["Orders & Balance"])
+app.include_router(dashboard.router, prefix=f"{settings.API_V1_STR}", tags=["Executive Dashboard"])
 app.include_router(websocket.router, tags=["Realtime WebSocket"])
 
 @app.get("/")
