@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+
+# Expo / React Native
+.expo/
+dist/
+web-build/
+.output/
+
+# Logs & Database
+*.log
+postgres_data/
+redis_data/
+rabbitmq_data/
+
+# OS Files
+.DS_Store
+Thumbs.db
