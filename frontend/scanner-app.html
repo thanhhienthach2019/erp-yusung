@@ -2,24 +2,29 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>YUSUNG - Barcode Production Scanner (Mobile & Tablet)</title>
+  <!-- PWA & Mobile Viewport Optimized -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0b1329">
+  <title>YUSUNG - Barcode Production Scanner (Mobile & Tablet Web/App)</title>
   <link rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico">
 
-  <!-- Font & Icons -->
+  <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Html5-Qrcode Library for Direct 60fps Camera Scanning -->
+  <!-- Html5-Qrcode Library for Direct 60fps Native Camera -->
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <style>
     :root {
-      --bg-dark: #0b1329;
-      --card-bg: #1e293b;
-      --card-border: #334155;
+      --bg-main: #090e1a;
+      --card-bg: #131d31;
+      --card-border: #22324e;
       --primary: #0284c7;
       --primary-hover: #0369a1;
       --accent: #38bdf8;
@@ -28,59 +33,59 @@
       --danger: #ef4444;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    
     html, body {
       width: 100%;
       height: 100%;
-      background-color: var(--bg-dark);
+      background-color: var(--bg-main);
       color: var(--text-main);
       overflow-x: hidden;
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
-    /* Common Utilities */
     .hidden { display: none !important; }
     .flex { display: flex; }
     .items-center { align-items: center; }
     .justify-between { justify-content: space-between; }
     .gap-2 { gap: 8px; }
     .gap-3 { gap: 12px; }
-    .gap-4 { gap: 16px; }
 
     /* ========================================================
-       1. LOGIN SCREEN
+       1. LOGIN SCREEN (GLASSMORPHISM)
     ======================================================== */
     #loginScreen {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-      background: radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.15) 0%, transparent 40%),
-                  radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
-                  #0b1329;
-      position: relative;
+      padding: 20px;
+      background: radial-gradient(circle at 15% 20%, rgba(14, 165, 233, 0.18) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 45%),
+                  var(--bg-main);
     }
 
     .login-card {
       width: 100%;
       max-width: 420px;
-      background: rgba(30, 41, 59, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      border-radius: 20px;
-      padding: 32px 24px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 20px rgba(14, 165, 233, 0.15);
-      animation: fadeIn 0.4s ease-out;
+      background: rgba(19, 29, 49, 0.88);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 22px;
+      padding: 34px 26px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 25px rgba(14, 165, 233, 0.15);
+      animation: fadeIn 0.35s ease-out;
     }
 
     .login-brand {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 28px;
+      margin-bottom: 26px;
       text-align: center;
     }
 
@@ -94,7 +99,7 @@
       justify-content: center;
       font-size: 28px;
       color: #ffffff;
-      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4);
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.45);
       margin-bottom: 14px;
     }
 
@@ -108,16 +113,13 @@
     .brand-desc {
       font-size: 13px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 5px;
     }
 
-    .form-group {
-      margin-bottom: 18px;
-    }
-
+    .form-group { margin-bottom: 18px; }
     .form-label {
       display: block;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #cbd5e1;
       margin-bottom: 6px;
@@ -140,8 +142,8 @@
 
     .form-input {
       width: 100%;
-      height: 46px;
-      background: rgba(15, 23, 42, 0.8);
+      height: 48px;
+      background: rgba(9, 14, 26, 0.85);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 0 14px 0 42px;
@@ -168,7 +170,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       font-size: 13px;
       color: var(--text-muted);
     }
@@ -187,10 +189,9 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      box-shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.5);
+      box-shadow: 0 10px 22px -5px rgba(2, 132, 199, 0.5);
       transition: all 0.2s ease;
     }
-
     .btn-login:active { transform: scale(0.98); }
     .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
 
@@ -208,24 +209,25 @@
     }
 
     /* ========================================================
-       2. SCANNER MAIN APP
+       2. RESPONSIVE WEB/APP LAYOUT (TABLET & MOBILE)
     ======================================================== */
     #appScreen {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background: #0f172a;
+      background: var(--bg-main);
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
     /* Sticky App Header */
     .app-header {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(12px);
+      z-index: 1000;
+      background: rgba(9, 14, 26, 0.96);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--card-border);
-      padding: 12px 16px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -247,71 +249,88 @@
       justify-content: center;
       font-size: 16px;
       color: #ffffff;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
     }
 
-    .header-title-box { line-height: 1.2; }
-    .header-app-title { font-size: 14px; font-weight: 800; color: #ffffff; }
+    .header-app-title { font-size: 14px; font-weight: 900; color: #ffffff; line-height: 1.2; }
     .header-app-sub { font-size: 11px; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 5px; }
 
     .pulse-dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--success);
       box-shadow: 0 0 8px var(--success);
       animation: pulse 1.5s infinite;
     }
+    @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
 
     .header-user-group {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+    }
+
+    .btn-web-erp {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(14, 165, 233, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
     }
 
     .user-pill {
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(19, 29, 49, 0.85);
       border: 1px solid var(--card-border);
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 11.5px;
       color: #cbd5e1;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .btn-logout {
       background: rgba(239, 68, 68, 0.15);
       color: #f87171;
       border: 1px solid rgba(239, 68, 68, 0.3);
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 8px;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
-    /* Shift & Date Bar */
+    /* Shift & Date Context Bar */
     .context-bar {
-      background: #1e293b;
-      padding: 10px 16px;
+      background: #0f172a;
+      padding: 8px 14px;
       border-bottom: 1px solid var(--card-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
 
     .shift-toggle-group {
       display: flex;
-      background: #0f172a;
-      border-radius: 10px;
-      padding: 3px;
+      background: var(--bg-main);
+      border-radius: 8px;
+      padding: 2px;
       border: 1px solid var(--card-border);
     }
 
@@ -319,8 +338,8 @@
       border: none;
       background: transparent;
       color: var(--text-muted);
-      padding: 6px 14px;
-      border-radius: 8px;
+      padding: 5px 12px;
+      border-radius: 6px;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
@@ -330,16 +349,16 @@
     .shift-btn.active {
       background: var(--primary);
       color: #ffffff;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
     }
 
     .date-input-group {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: #0f172a;
-      padding: 4px 10px;
-      border-radius: 10px;
+      gap: 6px;
+      background: var(--bg-main);
+      padding: 4px 8px;
+      border-radius: 8px;
       border: 1px solid var(--card-border);
     }
 
@@ -347,77 +366,69 @@
       background: transparent;
       border: none;
       color: #ffffff;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
       outline: none;
     }
 
-    /* Main Layout */
-    .app-content {
+    /* ========================================================
+       3. RESPONSIVE GRID (TABLET 2-COLUMN VS MOBILE 1-COLUMN)
+    ======================================================== */
+    .app-main-layout {
       flex: 1;
-      padding: 16px;
-      max-width: 1200px;
+      padding: 12px;
+      max-width: 1400px;
       margin: 0 auto;
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
     }
 
-    /* 3 KPI Cards */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
+    /* Desktop & Tablet: 2 Columns Grid */
+    @media (min-width: 820px) {
+      .app-main-layout {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+      .col-left {
+        position: sticky;
+        top: 60px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .col-right {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .mobile-only { display: none !important; }
     }
 
-    .kpi-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    /* Small Phone Screens (< 820px) */
+    @media (max-width: 819px) {
+      .app-main-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-bottom: 85px; /* Leave room for fixed bottom bar */
+      }
+      .tablet-only { display: none !important; }
     }
 
-    .kpi-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
-    .kpi-value {
-      font-size: 24px;
-      font-weight: 900;
-      color: #ffffff;
-      line-height: 1.1;
-    }
-
-    .kpi-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-top: 3px;
-    }
-
-    /* Scanner Viewfinder Box */
+    /* ========================================================
+       4. CAMERA CARD & LIVE SCANNER
+    ======================================================== */
     .scanner-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4);
     }
 
     .scanner-card-header {
-      padding: 12px 16px;
+      padding: 10px 14px;
       background: #0f172a;
       display: flex;
       align-items: center;
@@ -426,18 +437,18 @@
     }
 
     .scanner-card-title {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       color: var(--accent);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .scanner-view-container {
       position: relative;
       width: 100%;
-      height: 320px;
+      height: 240px; /* Perfect height on small phones */
       background: #000000;
       overflow: hidden;
       display: flex;
@@ -445,34 +456,29 @@
       justify-content: center;
     }
 
-    #qrReader {
-      width: 100%;
-      height: 100%;
+    @media (min-width: 820px) {
+      .scanner-view-container { height: 300px; }
     }
 
-    #qrReader video {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover !important;
-    }
+    #qrReader { width: 100%; height: 100%; }
+    #qrReader video { width: 100% !important; height: 100% !important; object-fit: cover !important; }
 
     /* Laser Line Animation */
     .scan-laser-line {
       position: absolute;
-      left: 8%;
-      right: 8%;
-      height: 2px;
+      left: 6%;
+      right: 6%;
+      height: 2.5px;
       background: #ef4444;
-      box-shadow: 0 0 12px #ef4444, 0 0 4px #ef4444;
+      box-shadow: 0 0 14px #ef4444, 0 0 4px #ef4444;
       animation: laserMove 2s infinite ease-in-out;
       pointer-events: none;
       z-index: 10;
     }
-
     @keyframes laserMove {
-      0% { top: 15%; opacity: 0.3; }
-      50% { top: 85%; opacity: 1; }
-      100% { top: 15%; opacity: 0.3; }
+      0% { top: 12%; opacity: 0.3; }
+      50% { top: 88%; opacity: 1; }
+      100% { top: 12%; opacity: 0.3; }
     }
 
     .camera-off-placeholder {
@@ -480,86 +486,117 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       color: var(--text-muted);
       text-align: center;
-      padding: 20px;
+      padding: 16px;
     }
 
     .scanner-controls {
-      padding: 12px 16px;
+      padding: 8px 12px;
       background: #0f172a;
       border-top: 1px solid var(--card-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
+      gap: 6px;
     }
 
     .btn-cam {
-      padding: 9px 16px;
-      border-radius: 10px;
-      font-size: 13px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       border: none;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }
+    .btn-cam:active { transform: scale(0.95); }
 
     .btn-cam-primary { background: var(--primary); color: #ffffff; }
     .btn-cam-danger { background: var(--danger); color: #ffffff; }
-    .btn-cam-secondary { background: #334155; color: #f1f5f9; }
+    .btn-cam-secondary { background: #1e293b; color: #f1f5f9; border: 1px solid var(--card-border); }
+    .btn-cam-torch.active { background: #eab308; color: #000; box-shadow: 0 0 12px rgba(234, 179, 8, 0.6); }
 
-    /* Barcode Gun / Manual Input Bar */
-    .gun-input-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 14px;
-    }
-
+    /* Industrial Barcode Gun Input */
     .gun-input-box {
       position: relative;
       display: flex;
       align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 6px 8px;
     }
 
     .gun-input {
       width: 100%;
-      height: 48px;
-      background: #0f172a;
-      border: 1.5px solid #0284c7;
-      border-radius: 12px;
-      padding: 0 90px 0 44px;
+      height: 40px;
+      background: #090e1a;
+      border: 1.5px solid var(--primary);
+      border-radius: 8px;
+      padding: 0 74px 0 38px;
       color: #ffffff;
-      font-size: 15px;
+      font-family: var(--font-mono);
+      font-size: 13.5px;
       font-weight: 600;
       outline: none;
     }
-
-    .gun-input:focus {
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.35);
-    }
+    .gun-input:focus { box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.35); }
 
     .btn-manual-add {
       position: absolute;
-      right: 6px;
-      height: 36px;
-      padding: 0 14px;
-      background: #0284c7;
+      right: 12px;
+      height: 32px;
+      padding: 0 12px;
+      background: var(--primary);
       color: #ffffff;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11.5px;
       cursor: pointer;
     }
 
-    /* Staging Table & Aggregation Preview */
+    /* ========================================================
+       5. KPI SUMMARY TILES (COMPACT STRIP)
+    ======================================================== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .kpi-tile {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .kpi-tile-value {
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1.1;
+      font-family: var(--font-mono);
+    }
+    .kpi-tile-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    /* ========================================================
+       6. STAGING LIST: DUAL MODE (TABLE ON TABLET / CARDS ON PHONE)
+    ======================================================== */
     .staging-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -570,18 +607,18 @@
     }
 
     .staging-header {
-      padding: 14px 18px;
+      padding: 12px 16px;
       background: #0f172a;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--card-border);
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
 
     .staging-title {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 800;
       color: #ffffff;
       display: flex;
@@ -593,49 +630,44 @@
       background: rgba(14, 165, 233, 0.2);
       color: var(--accent);
       padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 12px;
+      border-radius: 10px;
+      font-size: 11.5px;
       font-weight: 800;
-    }
-
-    .staging-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-family: var(--font-mono);
     }
 
     .btn-clear {
       background: transparent;
       border: 1px solid var(--card-border);
       color: var(--text-muted);
-      padding: 7px 14px;
+      padding: 6px 12px;
       border-radius: 8px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 600;
       cursor: pointer;
     }
-
     .btn-clear:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
 
-    .btn-commit {
+    .btn-commit-action {
       background: linear-gradient(135deg, #10b981, #059669);
       color: #ffffff;
       border: none;
-      padding: 9px 20px;
+      padding: 9px 18px;
       border-radius: 10px;
       font-size: 13px;
       font-weight: 800;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
       box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s ease;
     }
+    .btn-commit-action:active { transform: scale(0.97); }
 
-    .btn-commit:active { transform: scale(0.97); }
-
+    /* Tablet Table View */
     .table-container {
-      max-height: 380px;
+      max-height: 480px;
       overflow-y: auto;
       overflow-x: auto;
     }
@@ -644,64 +676,177 @@
       width: 100%;
       border-collapse: collapse;
       text-align: left;
-      font-size: 13px;
+      font-size: 12.5px;
     }
 
     .data-table th {
-      background: #0f172a;
+      background: #090e1a;
       color: #94a3b8;
       font-weight: 700;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 10px 14px;
+      padding: 9px 12px;
       position: sticky;
       top: 0;
       border-bottom: 1px solid var(--card-border);
+      z-index: 5;
     }
 
     .data-table td {
-      padding: 10px 14px;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(34, 50, 78, 0.6);
       color: #e2e8f0;
       white-space: nowrap;
     }
 
-    .data-table tr:hover {
-      background: rgba(51, 65, 85, 0.3);
+    .data-table tr:hover { background: rgba(30, 41, 59, 0.4); }
+
+    /* Mobile Cards View (Optimized for Small Phone Viewport) */
+    .mobile-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      max-height: 420px;
+      overflow-y: auto;
     }
 
-    .badge-size {
+    .staging-card-item {
+      background: #090e1a;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: all 0.15s ease;
+    }
+    .staging-card-item:hover { border-color: rgba(56, 189, 248, 0.4); }
+
+    .card-item-main { flex: 1; min-width: 0; }
+    .card-item-plan {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+    .card-item-tags {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tag-size {
       background: rgba(56, 189, 248, 0.15);
       color: var(--accent);
-      padding: 2px 8px;
+      padding: 2px 7px;
       border-radius: 6px;
+      font-size: 11px;
       font-weight: 700;
-      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+    .tag-qty {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+    .tag-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
     }
 
-    .btn-delete-row {
+    .btn-delete-item {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: rgba(239, 68, 68, 0.12);
       color: #f87171;
-      background: transparent;
-      border: none;
+      border: 1px solid rgba(239, 68, 68, 0.25);
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 14px;
-      padding: 4px;
+      flex-shrink: 0;
     }
+    .btn-delete-item:active { transform: scale(0.9); }
 
     .empty-state {
-      padding: 40px 20px;
+      padding: 35px 20px;
       text-align: center;
       color: var(--text-muted);
+      font-size: 13px;
     }
+
+    /* ========================================================
+       7. FIXED BOTTOM BAR (MOBILE THUMB ACTION)
+    ======================================================== */
+    .mobile-bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(9, 14, 26, 0.95);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--card-border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 1000;
+      box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .bottom-bar-summary {
+      display: flex;
+      flex-direction: column;
+    }
+    .bottom-bar-pairs {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--success);
+      font-family: var(--font-mono);
+      line-height: 1.1;
+    }
+    .bottom-bar-sub { font-size: 11px; color: var(--text-muted); }
+
+    .btn-mobile-commit {
+      flex: 1;
+      max-width: 240px;
+      height: 44px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    }
+    .btn-mobile-commit:active { transform: scale(0.97); }
 
     /* Modal Dialog */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 9999;
+      background: rgba(9, 14, 26, 0.88);
+      backdrop-filter: blur(10px);
+      z-index: 10000;
       display: none;
       align-items: center;
       justify-content: center;
@@ -710,22 +855,18 @@
 
     .modal-card {
       width: 100%;
-      max-width: 480px;
-      background: #1e293b;
+      max-width: 460px;
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 18px;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      animation: modalPop 0.25s ease-out;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      animation: modalPop 0.22s ease-out;
     }
-
-    @keyframes modalPop {
-      0% { transform: scale(0.92); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
+    @keyframes modalPop { 0% { transform: scale(0.92); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
     .modal-header {
-      padding: 16px 20px;
+      padding: 14px 18px;
       background: #0f172a;
       display: flex;
       align-items: center;
@@ -734,14 +875,16 @@
     }
 
     .modal-body {
-      padding: 20px;
-      font-size: 13.5px;
+      padding: 18px;
+      font-size: 13px;
       color: #cbd5e1;
       line-height: 1.6;
+      max-height: 65vh;
+      overflow-y: auto;
     }
 
     .modal-footer {
-      padding: 14px 20px;
+      padding: 12px 18px;
       background: #0f172a;
       display: flex;
       justify-content: flex-end;
@@ -752,30 +895,27 @@
     /* Toast Notification */
     #toast {
       position: fixed;
-      bottom: 24px;
+      top: 16px;
       left: 50%;
-      transform: translateX(-50%) translateY(100px);
+      transform: translateX(-50%) translateY(-100px);
       background: #0f172a;
       color: #ffffff;
-      padding: 12px 20px;
+      padding: 10px 18px;
       border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12.5px;
+      font-weight: 700;
       z-index: 100000;
       opacity: 0;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       border: 1px solid var(--card-border);
+      max-width: 90%;
+      text-align: center;
     }
-
-    #toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     #toast.success { border-color: var(--success); }
     #toast.error { border-color: var(--danger); }
     #toast.warning { border-color: var(--warning); }
@@ -784,7 +924,7 @@
 <body>
 
   <!-- ========================================================
-       SCREEN 1: LOGIN (XÁC THỰC NGƯỜI DÙNG GOOGLE SHEETS)
+       SCREEN 1: LOGIN
   ======================================================== -->
   <div id="loginScreen">
     <div class="login-card">
@@ -792,8 +932,8 @@
         <div class="brand-icon-box">
           <i class="fa-solid fa-barcode"></i>
         </div>
-        <div class="brand-title">YUSUNG ERP SYSTEM</div>
-        <div class="brand-desc">Phân Hệ Quét Tem Mã Vạch (Mobile & Tablet)</div>
+        <div class="brand-title">YUSUNG SCANNER</div>
+        <div class="brand-desc">Phân Hệ Quét Tem Sản Xuất (Mobile & Tablet)</div>
       </div>
 
       <div id="loginError" class="error-banner">
@@ -806,7 +946,7 @@
           <label class="form-label">Tên Đăng Nhập</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-user input-icon"></i>
-            <input type="text" id="inputUsername" class="form-input" placeholder="Nhập username của bạn..." autocomplete="username" required>
+            <input type="text" id="inputUsername" class="form-input" placeholder="Nhập username..." autocomplete="username" required>
           </div>
         </div>
 
@@ -824,7 +964,7 @@
             <input type="checkbox" id="chkRememberMe" checked style="accent-color: var(--primary);">
             Ghi nhớ đăng nhập
           </label>
-          <span style="font-size:12px; color:var(--accent);">Hệ thống ERP v2.0</span>
+          <span style="font-size:12px; color:var(--accent);">Yusung ERP v2.0</span>
         </div>
 
         <button type="submit" id="btnLogin" class="btn-login">
@@ -833,7 +973,7 @@
         </button>
 
         <div style="text-align:center; margin-top:16px;">
-          <a href="/" style="color:#94a3b8; font-size:12.5px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+          <a href="https://erp.yusung.workers.dev" style="color:#94a3b8; font-size:12.5px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
             <i class="fa-solid fa-arrow-left"></i> Quay lại Web ERP Nhập Liệu
           </a>
         </div>
@@ -842,36 +982,35 @@
   </div>
 
   <!-- ========================================================
-       SCREEN 2: DEDICATED BARCODE SCANNER APP
+       SCREEN 2: APP MAIN SCREEN
   ======================================================== -->
   <div id="appScreen" class="hidden">
-    <!-- Header -->
+    <!-- Top Sticky Header -->
     <header class="app-header">
       <div class="header-logo-group">
         <div class="header-logo-badge">
           <i class="fa-solid fa-barcode"></i>
         </div>
-        <div class="header-title-box">
+        <div>
           <div class="header-app-title">YUSUNG SCANNER</div>
           <div class="header-app-sub">
             <span class="pulse-dot"></span>
-            Hệ Thống Trực Tuyến
+            Trực Tuyến
           </div>
         </div>
       </div>
 
       <div class="header-user-group">
-        <a href="/" style="text-decoration:none; display:flex; align-items:center; gap:6px; background:rgba(14,165,233,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:6px 12px; border-radius:8px; font-size:12px; font-weight:700;" title="Quay về Web ERP Nhập Liệu">
+        <a href="https://erp.yusung.workers.dev" class="btn-web-erp" title="Mở Web ERP Nhập Liệu">
           <i class="fa-solid fa-laptop"></i>
-          <span>Web ERP</span>
+          <span class="tablet-only">Web ERP</span>
         </a>
         <div class="user-pill" id="userBadge">
           <i class="fa-solid fa-circle-user text-accent"></i>
           <span id="lblUserDisplay">Operator</span>
         </div>
         <button class="btn-logout" onclick="handleLogout()" title="Đăng xuất">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-          <span>Thoát</span>
+          <i class="fa-solid fa-power-off"></i>
         </button>
       </div>
     </header>
@@ -888,160 +1027,179 @@
       </div>
 
       <div class="date-input-group">
-        <i class="fa-solid fa-calendar-days text-accent" style="font-size:13px;"></i>
+        <i class="fa-solid fa-calendar-days text-accent" style="font-size:12px;"></i>
         <input type="date" id="inputProductDate" class="date-input" onchange="onDateChange()">
       </div>
     </div>
 
     <!-- Main Content Area -->
-    <main class="app-content">
-      <!-- 3 KPI Summary Cards -->
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
-            <i class="fa-solid fa-box-archive"></i>
+    <main class="app-main-layout">
+      <!-- Left Column (Tablet) / Top Section (Mobile): Camera & Gun Input -->
+      <section class="col-left">
+        <!-- Live Camera Scanner Card -->
+        <div class="scanner-card">
+          <div class="scanner-card-header">
+            <div class="scanner-card-title">
+              <i class="fa-solid fa-video"></i>
+              CAMERA QUÉT MÃ (LIVE)
+            </div>
+            <div style="font-size:11px; color:var(--text-muted);" id="camStatusText">
+              <span class="pulse-dot"></span> Sẵn sàng
+            </div>
           </div>
-          <div>
-            <div class="kpi-value" id="kpiTotalPairs" style="color: #10b981;">0</div>
-            <div class="kpi-label">Tổng Đôi Chờ Lưu</div>
-          </div>
-        </div>
 
-        <div class="kpi-card">
-          <div class="kpi-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">
-            <i class="fa-solid fa-layer-group"></i>
-          </div>
-          <div>
-            <div class="kpi-value" id="kpiPlanningsCount" style="color: #38bdf8;">0</div>
-            <div class="kpi-label">Số Planning Code (Gộp)</div>
-          </div>
-        </div>
+          <div class="scanner-view-container" id="cameraViewBox">
+            <div class="scan-laser-line" id="laserLine"></div>
+            <div id="qrReader"></div>
 
-        <div class="kpi-card">
-          <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-            <i class="fa-solid fa-clock-rotate-left"></i>
+            <div class="camera-off-placeholder hidden" id="cameraOffNotice">
+              <i class="fa-solid fa-camera-slash" style="font-size: 32px; opacity: 0.5;"></i>
+              <div style="font-size: 13px; font-weight: 700; color: #cbd5e1;">Camera đang tắt</div>
+              <button class="btn-cam btn-cam-primary" onclick="startCameraScanner()">
+                <i class="fa-solid fa-camera"></i> Bật Lại Camera
+              </button>
+            </div>
           </div>
-          <div>
-            <div class="kpi-value" id="kpiLastScan" style="font-size: 15px; color: #fbbf24; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;">-</div>
-            <div class="kpi-label">Tem Vừa Quét Gần Nhất</div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Live Camera Scanner Card (Native Hardware Viewfinder) -->
-      <div class="scanner-card">
-        <div class="scanner-card-header">
-          <div class="scanner-card-title">
-            <i class="fa-solid fa-video"></i>
-            CAMERA QUÉT MÃ VẠCH (LIVE SCANNER)
-          </div>
-          <div style="font-size:12px; color:var(--text-muted);" id="camStatusText">
-            <span class="pulse-dot"></span> Camera sẵn sàng
-          </div>
-        </div>
-
-        <div class="scanner-view-container" id="cameraViewBox">
-          <div class="scan-laser-line" id="laserLine"></div>
-          <div id="qrReader"></div>
-
-          <div class="camera-off-placeholder hidden" id="cameraOffNotice">
-            <i class="fa-solid fa-camera-slash" style="font-size: 36px; opacity: 0.5;"></i>
-            <div style="font-size: 14px; font-weight: 700; color: #cbd5e1;">Camera đang tắt</div>
-            <button class="btn-cam btn-cam-primary" onclick="startCameraScanner()">
-              <i class="fa-solid fa-camera"></i> Bật Lại Camera
-            </button>
-          </div>
-        </div>
-
-        <div class="scanner-controls">
-          <div class="flex gap-2">
+          <div class="scanner-controls">
             <button class="btn-cam btn-cam-danger" id="btnToggleCam" onclick="toggleCameraScanner()">
-              <i class="fa-solid fa-stop"></i> Tắt Camera
+              <i class="fa-solid fa-stop"></i> Tắt
             </button>
-            <button class="btn-cam btn-cam-secondary" onclick="switchCameraFacing()" title="Đổi camera trước/sau">
-              <i class="fa-solid fa-camera-rotate"></i> Đổi Camera
+            <button class="btn-cam btn-cam-secondary" onclick="switchCameraFacing()" title="Đổi Camera">
+              <i class="fa-solid fa-camera-rotate"></i> Đổi
             </button>
-          </div>
-
-          <!-- Native photo capture fallback -->
-          <div>
+            <button class="btn-cam btn-cam-secondary btn-cam-torch" id="btnTorch" onclick="toggleTorch()" title="Bật/Tắt Đèn Flash Soi Mã">
+              <i class="fa-solid fa-bolt"></i> Đèn
+            </button>
+            <!-- Native photo scan fallback -->
             <input type="file" id="nativePhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="handleNativePhoto(this)">
-            <button class="btn-cam btn-cam-secondary" onclick="document.getElementById('nativePhotoInput').click()" title="Chụp ảnh quét bằng camera máy ảnh">
-              <i class="fa-solid fa-camera-retro"></i> Chụp Ảnh Tem
+            <button class="btn-cam btn-cam-secondary" onclick="document.getElementById('nativePhotoInput').click()" title="Chụp ảnh">
+              <i class="fa-solid fa-camera-retro"></i> Chụp
             </button>
           </div>
         </div>
-      </div>
 
-      <!-- Súng Quét Cầm Tay / Nhập Thủ Công -->
-      <div class="gun-input-card">
+        <!-- Súng Quét / Nhập Thủ Công -->
         <div class="gun-input-box">
-          <i class="fa-solid fa-barcode text-accent" style="position:absolute; left:16px; font-size:18px;"></i>
-          <input type="text" id="inputGunBarcode" class="gun-input" placeholder="Bấm cò súng quét hoặc nhập mã vạch rồi Enter..." onkeydown="onGunKeyDown(event)">
-          <button class="btn-manual-add" onclick="handleManualAdd()">
-            <i class="fa-solid fa-plus me-1"></i> Thêm
-          </button>
+          <i class="fa-solid fa-barcode text-accent" style="position:absolute; left:16px; font-size:16px;"></i>
+          <input type="text" id="inputGunBarcode" class="gun-input" placeholder="Bắn súng quét hoặc gõ mã..." onkeydown="onGunKeyDown(event)">
+          <button class="btn-manual-add" onclick="handleManualAdd()">Thêm</button>
         </div>
-      </div>
 
-      <!-- Staging Table (Bảng tạm kiểm tra & Gộp Planning Code trước khi lưu) -->
-      <div class="staging-card">
-        <div class="staging-header">
-          <div class="staging-title">
-            <i class="fa-solid fa-table-list text-accent"></i>
-            Danh Sách Tem Chờ Lưu Vào IP Sản Xuất
-            <span class="badge-count" id="badgeStagingCount">0 tem</span>
+        <!-- 3 KPI Summary Tiles on Tablet (Desktop) -->
+        <div class="kpi-grid tablet-only">
+          <div class="kpi-tile">
+            <div class="kpi-tile-value" id="kpiTotalPairsDesk" style="color:var(--success);">0</div>
+            <div class="kpi-tile-label">Đôi Chờ Lưu</div>
           </div>
-
-          <div class="staging-actions">
-            <button class="btn-clear" onclick="clearStagingList()" title="Xóa toàn bộ tem đang chờ lưu">
-              <i class="fa-solid fa-trash me-1"></i> Xóa Hết
-            </button>
-            <button class="btn-commit" id="btnCommit" onclick="showCommitModal()">
-              <i class="fa-solid fa-floppy-disk"></i>
-              <span id="lblCommitBtn">LƯU VÀO IP SẢN XUẤT</span>
-            </button>
+          <div class="kpi-tile">
+            <div class="kpi-tile-value" id="kpiPlanningsDesk" style="color:var(--accent);">0</div>
+            <div class="kpi-tile-label">Planning Gộp</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-tile-value" id="kpiLastScanDesk" style="color:var(--warning); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
+            <div class="kpi-tile-label">Vừa Quét</div>
           </div>
         </div>
+      </section>
 
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th style="width:40px;">#</th>
-                <th>Mã Tem (Barcode ID)</th>
-                <th>Planning Code</th>
-                <th>Size</th>
-                <th>Ca</th>
-                <th>Số Đôi</th>
-                <th>Ngày Quét</th>
-                <th>Giờ Quét</th>
-                <th style="width:50px; text-align:center;">Xóa</th>
-              </tr>
-            </thead>
-            <tbody id="stagingTableBody">
-              <tr>
-                <td colspan="9" class="empty-state">
-                  <i class="fa-solid fa-barcode" style="font-size:32px; opacity:0.3; margin-bottom:8px; display:block;"></i>
-                  Chưa có tem nào trong danh sách tạm. Hãy hướng camera vào tem hoặc bấm cò súng quét!
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <!-- Right Column (Tablet) / Bottom Section (Mobile): Staging List & Actions -->
+      <section class="col-right">
+        <!-- 3 KPI Summary Strip on Mobile -->
+        <div class="kpi-grid mobile-only">
+          <div class="kpi-tile">
+            <div class="kpi-tile-value" id="kpiTotalPairsMob" style="color:var(--success);">0</div>
+            <div class="kpi-tile-label">Đôi Chờ Lưu</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-tile-value" id="kpiPlanningsMob" style="color:var(--accent);">0</div>
+            <div class="kpi-tile-label">Planning Gộp</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-tile-value" id="kpiLastScanMob" style="color:var(--warning); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
+            <div class="kpi-tile-label">Vừa Quét</div>
+          </div>
         </div>
-      </div>
+
+        <!-- Staging List Container -->
+        <div class="staging-card">
+          <div class="staging-header">
+            <div class="staging-title">
+              <i class="fa-solid fa-list-check text-accent"></i>
+              Danh Sách Tem Chờ Lưu
+              <span class="badge-count" id="badgeStagingCount">0 tem</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button class="btn-clear" onclick="clearStagingList()" title="Xóa hết tem đang chờ">
+                <i class="fa-solid fa-trash me-1"></i> Xóa Hết
+              </button>
+              <button class="btn-commit-action tablet-only" onclick="showCommitModal()">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span id="lblCommitDesk">LƯU VÀO IP SẢN XUẤT</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tablet Full Table -->
+          <div class="table-container tablet-only">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:36px;">#</th>
+                  <th>Mã Tem (Barcode ID)</th>
+                  <th>Planning Code</th>
+                  <th>Size</th>
+                  <th>Ca</th>
+                  <th>Số Đôi</th>
+                  <th>Giờ Quét</th>
+                  <th style="width:40px; text-align:center;">Xóa</th>
+                </tr>
+              </thead>
+              <tbody id="stagingTableBody">
+                <tr>
+                  <td colspan="8" class="empty-state">
+                    <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
+                    Chưa có tem nào trong danh sách. Hướng camera vào tem hoặc bấm cò súng quét!
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards View (Optimized for Small Phones) -->
+          <div class="mobile-cards-list mobile-only" id="mobileCardsList">
+            <div class="empty-state">
+              <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
+              Chưa có tem nào trong danh sách. Hãy hướng camera vào tem để quét!
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <!-- Mobile Fixed Bottom Action Bar (Thumb-Accessible) -->
+    <div class="mobile-bottom-bar mobile-only">
+      <div class="bottom-bar-summary">
+        <div class="bottom-bar-pairs" id="lblBottomPairs">0 đôi</div>
+        <div class="bottom-bar-sub" id="lblBottomPlannings">0 Planning Code</div>
+      </div>
+      <button class="btn-mobile-commit" onclick="showCommitModal()">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+        <span>LƯU SẢN XUẤT</span>
+      </button>
+    </div>
   </div>
 
-  <!-- Confirm Save Modal -->
+  <!-- Commit Confirm Modal -->
   <div class="modal-overlay" id="commitModal">
     <div class="modal-card">
       <div class="modal-header">
-        <div style="font-weight:800; font-size:15px; color:#ffffff; display:flex; align-items:center; gap:8px;">
+        <div style="font-weight:800; font-size:14px; color:#ffffff; display:flex; align-items:center; gap:8px;">
           <i class="fa-solid fa-cloud-arrow-up text-accent"></i>
           Xác Nhận Lưu Vào IP Sản Xuất
         </div>
-        <i class="fa-solid fa-times" style="color:var(--text-muted); cursor:pointer;" onclick="closeCommitModal()"></i>
+        <i class="fa-solid fa-times" style="color:var(--text-muted); cursor:pointer; font-size:16px;" onclick="closeCommitModal()"></i>
       </div>
 
       <div class="modal-body" id="commitModalBody">
@@ -1050,7 +1208,7 @@
 
       <div class="modal-footer">
         <button class="btn-cam btn-cam-secondary" onclick="closeCommitModal()">Hủy Bỏ</button>
-        <button class="btn-commit" id="btnConfirmCommit" onclick="executeCommitScans()">
+        <button class="btn-commit-action" id="btnConfirmCommit" onclick="executeCommitScans()">
           <i class="fa-solid fa-check"></i> Xác Nhận Lưu Ngay
         </button>
       </div>
@@ -1083,13 +1241,14 @@
       scannedHistorySet: new Set(),
       html5QrScanner: null,
       isScanningActive: false,
-      currentCameraFacing: "environment", // 'environment' (rear) or 'user' (front)
+      currentCameraFacing: "environment",
+      torchOn: false,
       lastScannedText: "",
       lastScannedAt: 0
     };
 
     // ========================================================
-    // AUDIO FEEDBACK (Web Audio API)
+    // AUDIO FEEDBACK (Web Audio API) & HAPTICS
     // ========================================================
     function playBeep(isSuccess = true) {
       try {
@@ -1098,14 +1257,14 @@
         const gain = audioCtx.createGain();
         osc.type = "sine";
         if (isSuccess) {
-          osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High clear beep (A5)
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime);
           gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
           osc.start();
           osc.stop(audioCtx.currentTime + 0.12);
         } else {
-          osc.frequency.setValueAtTime(220, audioCtx.currentTime); // Low buzz warning
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime);
           gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
@@ -1114,9 +1273,8 @@
         }
       } catch (e) {}
 
-      // Trigger Haptic Vibration on mobile if supported
       if (navigator.vibrate) {
-        navigator.vibrate(isSuccess ? [80] : [100, 50, 100]);
+        navigator.vibrate(isSuccess ? [70] : [100, 50, 100]);
       }
     }
 
@@ -1131,14 +1289,13 @@
                        type === "error" ? "fa-solid fa-triangle-exclamation text-danger" :
                        "fa-solid fa-circle-info text-accent";
 
-      setTimeout(() => { toast.classList.remove("show"); }, 2800);
+      setTimeout(() => { toast.classList.remove("show"); }, 2600);
     }
 
     // ========================================================
     // AUTHENTICATION & LOGIN LOGIC
     // ========================================================
     function initAuth() {
-      // Check saved session in localStorage
       const savedUserStr = localStorage.getItem("yusung_scanner_user");
       const savedToken = localStorage.getItem("yusung_scanner_token");
 
@@ -1183,7 +1340,6 @@
       errBox.style.display = "none";
 
       try {
-        // Gọi trực tiếp đến Google Apps Script REST API
         const targetUrl = GAS_API_URL + "?action=login" +
           "&username=" + encodeURIComponent(username) +
           "&password=" + encodeURIComponent(password) +
@@ -1201,7 +1357,7 @@
             localStorage.setItem("yusung_scanner_token", state.sessionToken);
           }
 
-          showToast("Đăng nhập thành công! Chào mừng " + (state.currentUser.fullName || username), "success");
+          showToast("Đăng nhập thành công! Chào " + (state.currentUser.fullName || username), "success");
           switchToAppScreen();
         } else {
           errText.innerText = data.message || "Tên đăng nhập hoặc mật khẩu không chính xác.";
@@ -1239,26 +1395,17 @@
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("appScreen").classList.remove("hidden");
 
-      // Update User Profile Badge
       const user = state.currentUser || {};
-      document.getElementById("lblUserDisplay").innerText = (user.fullName || user.username || "Operator") + " (" + (user.username || "") + ")";
+      document.getElementById("lblUserDisplay").innerText = (user.fullName || user.username || "Operator");
 
-      // Set default date
       document.getElementById("inputProductDate").value = state.productDate;
-
-      // Load initial duplicate log history
       loadScannedHistory();
 
-      // Start camera automatically for operator convenience
-      setTimeout(() => {
-        startCameraScanner();
-      }, 300);
-
-      // Auto focus barcode gun input
+      setTimeout(() => { startCameraScanner(); }, 350);
       setTimeout(() => {
         const gunInput = document.getElementById("inputGunBarcode");
         if (gunInput) gunInput.focus();
-      }, 500);
+      }, 550);
     }
 
     // ========================================================
@@ -1284,7 +1431,7 @@
         const data = await res.json();
         if (data && data.status === true && Array.isArray(data.list)) {
           data.list.forEach(id => state.scannedHistorySet.add(String(id).trim()));
-          console.log("Loaded existing scanned history count:", state.scannedHistorySet.size);
+          console.log("Loaded existing scanned count:", state.scannedHistorySet.size);
         }
       } catch (e) {
         console.warn("Could not fetch remote scanned history:", e);
@@ -1304,18 +1451,17 @@
 
     function startCameraScanner() {
       const btn = document.getElementById("btnToggleCam");
-      const viewBox = document.getElementById("cameraViewBox");
       const offNotice = document.getElementById("cameraOffNotice");
       const laser = document.getElementById("laserLine");
       const statusText = document.getElementById("camStatusText");
 
       offNotice.classList.add("hidden");
       laser.style.display = "block";
-      statusText.innerHTML = '<span class="pulse-dot"></span> Đang quét liên tục...';
+      statusText.innerHTML = '<span class="pulse-dot"></span> Đang quét 60fps...';
 
       state.isScanningActive = true;
       btn.className = "btn-cam btn-cam-danger";
-      btn.innerHTML = '<i class="fa-solid fa-stop"></i> Tắt Camera';
+      btn.innerHTML = '<i class="fa-solid fa-stop"></i> Tắt';
 
       cleanUpHardwareTracks();
 
@@ -1342,27 +1488,24 @@
             qrbox: function(viewfinderWidth, viewfinderHeight) {
               const w = Math.min(Math.floor(viewfinderWidth * 0.90), 340);
               const h = Math.min(Math.floor(viewfinderHeight * 0.65), 200);
-              return { width: Math.max(w, 200), height: Math.max(h, 140) };
+              return { width: Math.max(w, 200), height: Math.max(h, 130) };
             }
           };
 
           state.html5QrScanner.start(
             { facingMode: state.currentCameraFacing },
             scanConfig,
-            function(decodedText) {
-              handleBarcodeDetected(decodedText);
-            },
+            function(decodedText) { handleBarcodeDetected(decodedText); },
             function(err) {}
           ).catch(function(err) {
             console.warn("Lỗi mở camera:", err);
-            // Fallback sang camera user nếu facingMode environment không khả dụng
             state.html5QrScanner.start(
               { facingMode: "user" },
               scanConfig,
               function(decodedText) { handleBarcodeDetected(decodedText); },
               function(e) {}
             ).catch(function(finalErr) {
-              alert("Không thể mở Camera: " + (finalErr.message || finalErr) + ". Vui lòng kiểm tra quyền Camera trong cài đặt!");
+              alert("Không thể mở Camera: " + (finalErr.message || finalErr));
               stopCameraScanner();
             });
           });
@@ -1381,7 +1524,7 @@
 
       state.isScanningActive = false;
       btn.className = "btn-cam btn-cam-primary";
-      btn.innerHTML = '<i class="fa-solid fa-camera"></i> Bật Camera Quét';
+      btn.innerHTML = '<i class="fa-solid fa-camera"></i> Bật';
 
       laser.style.display = "none";
       offNotice.classList.remove("hidden");
@@ -1392,9 +1535,32 @@
 
     function switchCameraFacing() {
       state.currentCameraFacing = (state.currentCameraFacing === "environment") ? "user" : "environment";
-      showToast("Đã chuyển sang camera: " + (state.currentCameraFacing === "environment" ? "Sau (Chính)" : "Trước"), "info");
+      showToast("Đã đổi sang camera: " + (state.currentCameraFacing === "environment" ? "Sau" : "Trước"), "info");
       if (state.isScanningActive) {
         startCameraScanner();
+      }
+    }
+
+    async function toggleTorch() {
+      try {
+        const video = document.querySelector("#qrReader video");
+        if (!video || !video.srcObject) {
+          showToast("Camera chưa bật để sử dụng đèn Flash", "info");
+          return;
+        }
+        const track = video.srcObject.getVideoTracks()[0];
+        if (!track) return;
+        const capabilities = track.getCapabilities ? track.getCapabilities() : {};
+        if (!capabilities.torch) {
+          showToast("Thiết bị này không hỗ trợ đèn Flash camera", "info");
+          return;
+        }
+        state.torchOn = !state.torchOn;
+        await track.applyConstraints({ advanced: [{ torch: state.torchOn }] });
+        document.getElementById("btnTorch").classList.toggle("active", state.torchOn);
+        showToast(state.torchOn ? "Đã bật đèn Flash" : "Đã tắt đèn Flash", "info");
+      } catch (e) {
+        console.warn("Torch error:", e);
       }
     }
 
@@ -1422,13 +1588,10 @@
       }
     }
 
-    // ========================================================
-    // NATIVE CAMERA PHOTO SCAN FALLBACK
-    // ========================================================
     function handleNativePhoto(input) {
       if (!input.files || input.files.length === 0) return;
       const file = input.files[0];
-      showToast("Đang nhận diện mã vạch từ ảnh chụp...", "info");
+      showToast("Đang nhận diện tem từ ảnh chụp...", "info");
 
       try {
         const helper = new Html5Qrcode("hiddenScanFileHelper");
@@ -1439,7 +1602,7 @@
             try { helper.clear(); } catch(e) {}
           })
           .catch(err => {
-            showToast("Không tìm thấy mã vạch trong ảnh chụp. Vui lòng chụp rõ nét hơn!", "error");
+            showToast("Không tìm thấy mã tem trong ảnh chụp. Vui lòng chụp rõ nét hơn!", "error");
             playBeep(false);
             input.value = "";
             try { helper.clear(); } catch(e) {}
@@ -1457,14 +1620,13 @@
       if (!rawBarcode) return;
 
       const now = Date.now();
-      // Chống quét lặp liên tục cùng 1 mã trong 1.5 giây khi camera vẫn chĩa vào tem
-      if (rawBarcode === state.lastScannedText && (now - state.lastScannedAt) < 1500) {
+      if (rawBarcode === state.lastScannedText && (now - state.lastScannedAt) < 1400) {
         return;
       }
       state.lastScannedText = rawBarcode;
       state.lastScannedAt = now;
 
-      // Phân tích cú pháp Barcode: IP|PLANNING_CODE|SIZE|SHIFT|DATE|QTY|BARCODE_ID
+      // Phân tích Barcode: IP|PLANNING_CODE|SIZE|SHIFT|DATE|QTY|BARCODE_ID
       const parts = rawBarcode.split('|');
       let planningCode = "";
       let size = "Standard";
@@ -1491,18 +1653,18 @@
       const duplicateInStaging = state.stagingScans.some(item => item.barcodeId === barcodeId);
       if (duplicateInStaging) {
         playBeep(false);
-        showToast("CẢNH BÁO: Tem [" + barcodeId + "] vừa được quét trong danh sách tạm!", "warning");
+        showToast("CẢNH BÁO: Tem [" + barcodeId + "] đã có trong danh sách chờ!", "warning");
         return;
       }
 
-      // 2. Kiểm tra trùng lặp trong Lịch sử IP_BARCODE_LOG đã lưu
+      // 2. Kiểm tra trùng lặp trong Lịch sử IP_BARCODE_LOG
       if (state.scannedHistorySet.has(barcodeId)) {
         playBeep(false);
-        showToast("CẢNH BÁO: Tem [" + barcodeId + "] đã được lưu trước đó vào hệ thống!", "error");
+        showToast("CẢNH BÁO: Tem [" + barcodeId + "] đã lưu trước đó!", "error");
         return;
       }
 
-      // 3. Hợp lệ -> Phát tiếng Bíp vui tươi và nạp vào danh sách chờ lưu
+      // 3. Hợp lệ -> Bíp thành công + nạp vào danh sách
       playBeep(true);
 
       const scanTimeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -1518,11 +1680,9 @@
         scannedBy: (state.currentUser && state.currentUser.username) || "Operator"
       });
 
-      // Cập nhật giao diện
       updateUI();
-      showToast("Đã quét mã: " + barcodeId + " (" + planningCode + " - Size " + size + ")", "success");
+      showToast("Đã quét: " + planningCode + " (Size " + size + ")", "success");
 
-      // Auto refocuse barcode gun input
       const gunInput = document.getElementById("inputGunBarcode");
       if (gunInput) {
         gunInput.value = "";
@@ -1530,7 +1690,6 @@
       }
     }
 
-    // Xử lý súng quét mã vạch / gõ thủ công
     function onGunKeyDown(event) {
       if (event.key === "Enter") {
         event.preventDefault();
@@ -1547,15 +1706,24 @@
     }
 
     // ========================================================
-    // UI RENDERING & STAGING TABLE
+    // UI RENDERING: DUAL MODE (TABLE ON TABLET / CARDS ON PHONE)
     // ========================================================
     function updateUI() {
       const tbody = document.getElementById("stagingTableBody");
-      const totalPairsEl = document.getElementById("kpiTotalPairs");
-      const planningsCountEl = document.getElementById("kpiPlanningsCount");
-      const lastScanEl = document.getElementById("kpiLastScan");
+      const mobileList = document.getElementById("mobileCardsList");
       const badgeCount = document.getElementById("badgeStagingCount");
-      const lblCommit = document.getElementById("lblCommitBtn");
+
+      // Stats Elements
+      const totalPairsDesk = document.getElementById("kpiTotalPairsDesk");
+      const totalPairsMob = document.getElementById("kpiTotalPairsMob");
+      const planningsDesk = document.getElementById("kpiPlanningsDesk");
+      const planningsMob = document.getElementById("kpiPlanningsMob");
+      const lastScanDesk = document.getElementById("kpiLastScanDesk");
+      const lastScanMob = document.getElementById("kpiLastScanMob");
+
+      const lblCommitDesk = document.getElementById("lblCommitDesk");
+      const lblBottomPairs = document.getElementById("lblBottomPairs");
+      const lblBottomPlannings = document.getElementById("lblBottomPlannings");
 
       let totalPairs = 0;
       const planningSet = new Set();
@@ -1565,58 +1733,96 @@
         if (item.planningCode) planningSet.add(item.planningCode);
       });
 
-      totalPairsEl.innerText = totalPairs;
-      planningsCountEl.innerText = planningSet.size;
+      // Update KPIs
+      totalPairsDesk.innerText = totalPairs;
+      totalPairsMob.innerText = totalPairs;
+      planningsDesk.innerText = planningSet.size;
+      planningsMob.innerText = planningSet.size;
       badgeCount.innerText = state.stagingScans.length + " tem";
-      lblCommit.innerText = "LƯU (" + totalPairs + " ĐÔI) VÀO IP SẢN XUẤT";
 
       if (state.stagingScans.length > 0) {
         const latest = state.stagingScans[0];
-        lastScanEl.innerText = latest.planningCode + " (" + latest.size + ")";
+        const latestTxt = latest.planningCode + " (" + latest.size + ")";
+        lastScanDesk.innerText = latestTxt;
+        lastScanMob.innerText = latestTxt;
       } else {
-        lastScanEl.innerText = "-";
+        lastScanDesk.innerText = "-";
+        lastScanMob.innerText = "-";
       }
 
+      // Update Action Button Labels
+      lblCommitDesk.innerText = "LƯU (" + totalPairs + " ĐÔI) VÀO IP SẢN XUẤT";
+      lblBottomPairs.innerText = totalPairs + " đôi";
+      lblBottomPlannings.innerText = planningSet.size + " Planning Code";
+
+      // Render Empty State
       if (state.stagingScans.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="9" class="empty-state">
-              <i class="fa-solid fa-barcode" style="font-size:32px; opacity:0.3; margin-bottom:8px; display:block;"></i>
-              Chưa có tem nào trong danh sách tạm. Hãy hướng camera vào tem hoặc bấm cò súng quét!
+            <td colspan="8" class="empty-state">
+              <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
+              Chưa có tem nào trong danh sách. Hướng camera vào tem hoặc bấm cò súng quét!
             </td>
           </tr>
+        `;
+        mobileList.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
+            Chưa có tem nào trong danh sách. Hãy hướng camera vào tem để quét!
+          </div>
         `;
         return;
       }
 
-      let html = "";
+      // 1. Render Tablet Table
+      let tableHtml = "";
       state.stagingScans.forEach((item, index) => {
-        html += `
+        tableHtml += `
           <tr>
             <td style="color:var(--text-muted); font-weight:700;">${state.stagingScans.length - index}</td>
-            <td style="font-family:monospace; font-weight:700; color:#38bdf8;">${escapeHtml(item.barcodeId)}</td>
+            <td style="font-family:var(--font-mono); font-weight:700; color:var(--accent);">${escapeHtml(item.barcodeId)}</td>
             <td style="font-weight:700; color:#ffffff;">${escapeHtml(item.planningCode)}</td>
-            <td><span class="badge-size">${escapeHtml(item.size)}</span></td>
+            <td><span class="tag-size">${escapeHtml(item.size)}</span></td>
             <td>${escapeHtml(item.shift)}</td>
-            <td style="font-weight:700; color:#10b981;">${item.qty}</td>
-            <td style="color:var(--text-muted);">${escapeHtml(item.productDate)}</td>
-            <td style="color:var(--text-muted); font-size:12px;">${escapeHtml(item.scanTime)}</td>
+            <td><span class="tag-qty">${item.qty} đôi</span></td>
+            <td style="color:var(--text-muted); font-size:11.5px; font-family:var(--font-mono);">${escapeHtml(item.scanTime)}</td>
             <td style="text-align:center;">
-              <button class="btn-delete-row" onclick="removeStagingItem(${index})" title="Xóa tem này">
+              <button class="btn-delete-item" onclick="removeStagingItem(${index})" title="Xóa tem này">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             </td>
           </tr>
         `;
       });
-      tbody.innerHTML = html;
+      tbody.innerHTML = tableHtml;
+
+      // 2. Render Mobile Cards
+      let cardsHtml = "";
+      state.stagingScans.forEach((item, index) => {
+        cardsHtml += `
+          <div class="staging-card-item">
+            <div class="card-item-main">
+              <div class="card-item-plan">${escapeHtml(item.planningCode)}</div>
+              <div class="card-item-tags">
+                <span class="tag-size">Size ${escapeHtml(item.size)}</span>
+                <span class="tag-qty">${item.qty} đôi</span>
+                <span class="tag-meta"><i class="fa-regular fa-clock me-1"></i>${escapeHtml(item.scanTime)}</span>
+              </div>
+            </div>
+            <button class="btn-delete-item" onclick="removeStagingItem(${index})" title="Xóa tem này">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+      });
+      mobileList.innerHTML = cardsHtml;
     }
 
     function removeStagingItem(index) {
       if (index >= 0 && index < state.stagingScans.length) {
         const removed = state.stagingScans.splice(index, 1)[0];
         updateUI();
-        showToast("Đã xóa tem: " + removed.barcodeId, "info");
+        showToast("Đã xóa: " + removed.barcodeId, "info");
       }
     }
 
@@ -1630,8 +1836,7 @@
     }
 
     // ========================================================
-    // COMMIT SCANS: GỘP PLANNING CODE & LƯU VÀO IP_PRODUCTION
-    // CẬP NHẬT IP_BARCODE_LOG (SCANNED_BY, SCANNED_AT)
+    // COMMIT SCANS: GỘP THEO PLANNING CODE & LƯU VÀO IP_PRODUCTION
     // ========================================================
     function showCommitModal() {
       if (state.stagingScans.length === 0) {
@@ -1639,7 +1844,6 @@
         return;
       }
 
-      // Tổng hợp tóm tắt việc gộp Planning Code
       const summaryMap = new Map();
       let totalQty = 0;
 
@@ -1650,30 +1854,30 @@
       });
 
       let summaryHtml = `
-        <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:14px; border:1px solid var(--card-border);">
-          <div style="font-weight:700; color:#38bdf8; margin-bottom:6px;">
-            <i class="fa-solid fa-calculator me-1"></i> Tổng kết số lượng: <b>${totalQty} đôi</b> (${state.stagingScans.length} tem)
+        <div style="background:#090e1a; padding:12px; border-radius:12px; margin-bottom:12px; border:1px solid var(--card-border);">
+          <div style="font-weight:800; color:var(--accent); margin-bottom:4px; font-size:13.5px;">
+            <i class="fa-solid fa-calculator me-1"></i> Tổng số lượng: <b>${totalQty} đôi</b> (${state.stagingScans.length} tem)
           </div>
-          <div style="font-size:12px; color:var(--text-muted);">
+          <div style="font-size:11.5px; color:var(--text-muted);">
             Người quét: <b>${escapeHtml((state.currentUser && state.currentUser.username) || "Operator")}</b> | Ca: <b>${escapeHtml(state.currentShift)}</b>
           </div>
         </div>
 
-        <div style="font-weight:700; margin-bottom:8px; font-size:13px; color:#ffffff;">
-          Tự động gộp thành <b>${summaryMap.size}</b> dòng Planning Code vào bảng IP_PRODUCTION:
+        <div style="font-weight:700; margin-bottom:8px; font-size:12.5px; color:#ffffff;">
+          Tự động gộp thành <b>${summaryMap.size}</b> dòng Planning Code vào IP_PRODUCTION:
         </div>
-        <ul style="padding-left:18px; margin-bottom:14px; font-size:13px; line-height:1.7;">
+        <ul style="padding-left:18px; margin-bottom:12px; font-size:12.5px; line-height:1.7;">
       `;
 
       summaryMap.forEach((qty, plan) => {
-        summaryHtml += `<li>Planning Code: <b style="color:#ffffff;">${escapeHtml(plan)}</b> &rarr; <b style="color:#10b981;">${qty} đôi</b></li>`;
+        summaryHtml += `<li>Planning: <b style="color:#ffffff;">${escapeHtml(plan)}</b> &rarr; <b style="color:var(--success); font-family:var(--font-mono);">${qty} đôi</b></li>`;
       });
 
       summaryHtml += `
         </ul>
-        <div style="font-size:12px; color:#94a3b8; background:rgba(14, 165, 233, 0.1); padding:10px; border-radius:8px; border-left:3px solid var(--accent);">
-          <i class="fa-solid fa-circle-info text-accent me-1"></i>
-          Hệ thống sẽ lưu vào <b>IP_PRODUCTION</b> đồng thời đánh dấu trạng thái <b>SCANNED</b>, ghi nhận người quét <b>SCANNED_BY</b> và thời gian vào bảng <b>IP_BARCODE_LOG</b>.
+        <div style="font-size:11.5px; color:#94a3b8; background:rgba(14, 165, 233, 0.08); padding:10px; border-radius:8px; border-left:3px solid var(--accent);">
+          <i class="fa-solid fa-circle-check text-accent me-1"></i>
+          Hệ thống sẽ tự động tra cứu và điền đầy đủ <b>CUSTOMER NAME, MODEL CODE, PANTONE CODE, FIXED ETD, SEPARATOR</b> và đánh dấu trạng thái <b>SCANNED</b> trong <b>IP_BARCODE_LOG</b>.
         </div>
       `;
 
@@ -1708,7 +1912,6 @@
         const data = await res.json();
 
         if (data && data.status === true) {
-          // Ghi nhận các barcode đã lưu vào cache chống trùng
           state.stagingScans.forEach(item => {
             if (item.barcodeId) state.scannedHistorySet.add(item.barcodeId);
           });
@@ -1744,7 +1947,6 @@
         .replace(/'/g, "&#039;");
     }
 
-    // Khởi chạy ứng dụng
     window.addEventListener("DOMContentLoaded", () => {
       initAuth();
     });
