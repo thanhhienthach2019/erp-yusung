@@ -1637,12 +1637,12 @@
       let barcodeId = rawBarcode;
 
       if (parts.length >= 6 && parts[0] === 'IP') {
-        planningCode = parts[1];
-        size = parts[2];
-        shift = parts[3] || state.currentShift;
-        productDate = parts[4] || state.productDate;
+        planningCode = parts[1].trim();
+        size = parts[2].trim();
+        shift = state.currentShift || parts[3] || "Ca A";
+        productDate = state.productDate || parts[4] || new Date().toISOString().slice(0, 10);
         qty = Number(parts[5]) || 1;
-        barcodeId = parts[6] || rawBarcode;
+        barcodeId = parts[6] ? parts[6].trim() : rawBarcode;
       } else {
         planningCode = rawBarcode;
         size = "Standard";
