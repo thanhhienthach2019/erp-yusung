@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const distHtmlPath = path.join(__dirname, 'frontend', 'dist', 'index.html');
+const distHtmlPath = fs.existsSync(path.join(__dirname, 'frontend', 'dist', 'index.html'))
+  ? path.join(__dirname, 'frontend', 'dist', 'index.html')
+  : path.join(__dirname, 'frontend', 'scanner-app.html');
 const scanWorkerPath = path.join(__dirname, 'cloudflare-worker-scan.js');
 
 const html = fs.readFileSync(distHtmlPath, 'utf8');
