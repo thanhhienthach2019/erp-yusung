@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>YUSUNG - Barcode Production Scanner (Mobile & Tablet)</title>
+  <link rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico">
+
+  <!-- Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Html5-Qrcode Library for Direct 60fps Camera Scanning -->
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0b1329;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --accent: #38bdf8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Common Utilities */
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+
+    /* ========================================================
+       1. LOGIN SCREEN
+    ======================================================== */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.15) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
+                  #0b1329;
+      position: relative;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 20px;
+      padding: 32px 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 20px rgba(14, 165, 233, 0.15);
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .login-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .brand-icon-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #0284c7, #10b981);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #ffffff;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4);
+      margin-bottom: 14px;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--accent);
+      font-size: 15px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 46px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0 14px 0 42px;
+      color: #ffffff;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+    }
+
+    .toggle-pwd {
+      position: absolute;
+      right: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .remember-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .btn-login {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.5);
+      transition: all 0.2s ease;
+    }
+
+    .btn-login:active { transform: scale(0.98); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .error-banner {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ========================================================
+       2. SCANNER MAIN APP
+    ======================================================== */
+    #appScreen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #0f172a;
+    }
+
+    /* Sticky App Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-logo-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-logo-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7, #10b981);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+
+    .header-title-box { line-height: 1.2; }
+    .header-app-title { font-size: 14px; font-weight: 800; color: #ffffff; }
+    .header-app-sub { font-size: 11px; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse 1.5s infinite;
+    }
+
+    .header-user-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-pill {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid var(--card-border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Shift & Date Bar */
+    .context-bar {
+      background: #1e293b;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .shift-toggle-group {
+      display: flex;
+      background: #0f172a;
+      border-radius: 10px;
+      padding: 3px;
+      border: 1px solid var(--card-border);
+    }
+
+    .shift-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .shift-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+    }
+
+    .date-input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #0f172a;
+      padding: 4px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+
+    .date-input {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+    }
+
+    /* Main Layout */
+    .app-content {
+      flex: 1;
+      padding: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 3 KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .kpi-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    /* Scanner Viewfinder Box */
+    .scanner-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    .scanner-card-header {
+      padding: 12px 16px;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .scanner-card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scanner-view-container {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      background: #000000;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #qrReader {
+      width: 100%;
+      height: 100%;
+    }
+
+    #qrReader video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+
+    /* Laser Line Animation */
+    .scan-laser-line {
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      height: 2px;
+      background: #ef4444;
+      box-shadow: 0 0 12px #ef4444, 0 0 4px #ef4444;
+      animation: laserMove 2s infinite ease-in-out;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    @keyframes laserMove {
+      0% { top: 15%; opacity: 0.3; }
+      50% { top: 85%; opacity: 1; }
+      100% { top: 15%; opacity: 0.3; }
+    }
+
+    .camera-off-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .scanner-controls {
+      padding: 12px 16px;
+      background: #0f172a;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-cam {
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-cam-primary { background: var(--primary); color: #ffffff; }
+    .btn-cam-danger { background: var(--danger); color: #ffffff; }
+    .btn-cam-secondary { background: #334155; color: #f1f5f9; }
+
+    /* Barcode Gun / Manual Input Bar */
+    .gun-input-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .gun-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .gun-input {
+      width: 100%;
+      height: 48px;
+      background: #0f172a;
+      border: 1.5px solid #0284c7;
+      border-radius: 12px;
+      padding: 0 90px 0 44px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .gun-input:focus {
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.35);
+    }
+
+    .btn-manual-add {
+      position: absolute;
+      right: 6px;
+      height: 36px;
+      padding: 0 14px;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* Staging Table & Aggregation Preview */
+    .staging-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .staging-header {
+      padding: 14px 18px;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .staging-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-count {
+      background: rgba(14, 165, 233, 0.2);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .staging-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-clear {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-clear:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
+
+    .btn-commit {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-commit:active { transform: scale(0.97); }
+
+    .table-container {
+      max-height: 380px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      background: #0f172a;
+      color: #94a3b8;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 14px;
+      position: sticky;
+      top: 0;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+      color: #e2e8f0;
+      white-space: nowrap;
+    }
+
+    .data-table tr:hover {
+      background: rgba(51, 65, 85, 0.3);
+    }
+
+    .badge-size {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .btn-delete-row {
+      color: #f87171;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+    }
+
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    /* Modal Dialog */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 480px;
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: modalPop 0.25s ease-out;
+    }
+
+    @keyframes modalPop {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .modal-body {
+      padding: 20px;
+      font-size: 13.5px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      background: #0f172a;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 100000;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid var(--card-border);
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    #toast.success { border-color: var(--success); }
+    #toast.error { border-color: var(--danger); }
+    #toast.warning { border-color: var(--warning); }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================
+       SCREEN 1: LOGIN (XÁC THỰC NGƯỜI DÙNG GOOGLE SHEETS)
+  ======================================================== -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-icon-box">
+          <i class="fa-solid fa-barcode"></i>
+        </div>
+        <div class="brand-title">YUSUNG ERP SYSTEM</div>
+        <div class="brand-desc">Phân Hệ Quét Tem Mã Vạch (Mobile & Tablet)</div>
+      </div>
+
+      <div id="loginError" class="error-banner">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span id="loginErrorText">Tên đăng nhập hoặc mật khẩu không đúng.</span>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Tên Đăng Nhập</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-user input-icon"></i>
+            <input type="text" id="inputUsername" class="form-input" placeholder="Nhập username của bạn..." autocomplete="username" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mật Khẩu</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="inputPassword" class="form-input" placeholder="Nhập mật khẩu..." autocomplete="current-password" required>
+            <i class="fa-solid fa-eye toggle-pwd" id="btnTogglePwd" onclick="togglePasswordVisibility()"></i>
+          </div>
+        </div>
+
+        <div class="remember-row">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+            <input type="checkbox" id="chkRememberMe" checked style="accent-color: var(--primary);">
+            Ghi nhớ đăng nhập
+          </label>
+          <span style="font-size:12px; color:var(--accent);">Hệ thống ERP v2.0</span>
+        </div>
+
+        <button type="submit" id="btnLogin" class="btn-login">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>ĐĂNG NHẬP HỆ THỐNG</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       SCREEN 2: DEDICATED BARCODE SCANNER APP
+  ======================================================== -->
+  <div id="appScreen" class="hidden">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-logo-group">
+        <div class="header-logo-badge">
+          <i class="fa-solid fa-barcode"></i>
+        </div>
+        <div class="header-title-box">
+          <div class="header-app-title">YUSUNG SCANNER</div>
+          <div class="header-app-sub">
+            <span class="pulse-dot"></span>
+            Hệ Thống Trực Tuyến
+          </div>
+        </div>
+      </div>
+
+      <div class="header-user-group">
+        <div class="user-pill" id="userBadge">
+          <i class="fa-solid fa-circle-user text-accent"></i>
+          <span id="lblUserDisplay">Operator</span>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()" title="Đăng xuất">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Thoát</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Context Settings (Ca & Ngày sản xuất) -->
+    <div class="context-bar">
+      <div class="shift-toggle-group">
+        <button type="button" class="shift-btn active" id="btnShiftA" onclick="setShift('Ca A')">
+          <i class="fa-solid fa-sun me-1"></i> Ca A
+        </button>
+        <button type="button" class="shift-btn" id="btnShiftB" onclick="setShift('Ca B')">
+          <i class="fa-solid fa-moon me-1"></i> Ca B
+        </button>
+      </div>
+
+      <div class="date-input-group">
+        <i class="fa-solid fa-calendar-days text-accent" style="font-size:13px;"></i>
+        <input type="date" id="inputProductDate" class="date-input" onchange="onDateChange()">
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="app-content">
+      <!-- 3 KPI Summary Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+            <i class="fa-solid fa-box-archive"></i>
+          </div>
+          <div>
+            <div class="kpi-value" id="kpiTotalPairs" style="color: #10b981;">0</div>
+            <div class="kpi-label">Tổng Đôi Chờ Lưu</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div>
+            <div class="kpi-value" id="kpiPlanningsCount" style="color: #38bdf8;">0</div>
+            <div class="kpi-label">Số Planning Code (Gộp)</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div>
+            <div class="kpi-value" id="kpiLastScan" style="font-size: 15px; color: #fbbf24; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;">-</div>
+            <div class="kpi-label">Tem Vừa Quét Gần Nhất</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Camera Scanner Card (Native Hardware Viewfinder) -->
+      <div class="scanner-card">
+        <div class="scanner-card-header">
+          <div class="scanner-card-title">
+            <i class="fa-solid fa-video"></i>
+            CAMERA QUÉT MÃ VẠCH (LIVE SCANNER)
+          </div>
+          <div style="font-size:12px; color:var(--text-muted);" id="camStatusText">
+            <span class="pulse-dot"></span> Camera sẵn sàng
+          </div>
+        </div>
+
+        <div class="scanner-view-container" id="cameraViewBox">
+          <div class="scan-laser-line" id="laserLine"></div>
+          <div id="qrReader"></div>
+
+          <div class="camera-off-placeholder hidden" id="cameraOffNotice">
+            <i class="fa-solid fa-camera-slash" style="font-size: 36px; opacity: 0.5;"></i>
+            <div style="font-size: 14px; font-weight: 700; color: #cbd5e1;">Camera đang tắt</div>
+            <button class="btn-cam btn-cam-primary" onclick="startCameraScanner()">
+              <i class="fa-solid fa-camera"></i> Bật Lại Camera
+            </button>
+          </div>
+        </div>
+
+        <div class="scanner-controls">
+          <div class="flex gap-2">
+            <button class="btn-cam btn-cam-danger" id="btnToggleCam" onclick="toggleCameraScanner()">
+              <i class="fa-solid fa-stop"></i> Tắt Camera
+            </button>
+            <button class="btn-cam btn-cam-secondary" onclick="switchCameraFacing()" title="Đổi camera trước/sau">
+              <i class="fa-solid fa-camera-rotate"></i> Đổi Camera
+            </button>
+          </div>
+
+          <!-- Native photo capture fallback -->
+          <div>
+            <input type="file" id="nativePhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="handleNativePhoto(this)">
+            <button class="btn-cam btn-cam-secondary" onclick="document.getElementById('nativePhotoInput').click()" title="Chụp ảnh quét bằng camera máy ảnh">
+              <i class="fa-solid fa-camera-retro"></i> Chụp Ảnh Tem
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Súng Quét Cầm Tay / Nhập Thủ Công -->
+      <div class="gun-input-card">
+        <div class="gun-input-box">
+          <i class="fa-solid fa-barcode text-accent" style="position:absolute; left:16px; font-size:18px;"></i>
+          <input type="text" id="inputGunBarcode" class="gun-input" placeholder="Bấm cò súng quét hoặc nhập mã vạch rồi Enter..." onkeydown="onGunKeyDown(event)">
+          <button class="btn-manual-add" onclick="handleManualAdd()">
+            <i class="fa-solid fa-plus me-1"></i> Thêm
+          </button>
+        </div>
+      </div>
+
+      <!-- Staging Table (Bảng tạm kiểm tra & Gộp Planning Code trước khi lưu) -->
+      <div class="staging-card">
+        <div class="staging-header">
+          <div class="staging-title">
+            <i class="fa-solid fa-table-list text-accent"></i>
+            Danh Sách Tem Chờ Lưu Vào IP Sản Xuất
+            <span class="badge-count" id="badgeStagingCount">0 tem</span>
+          </div>
+
+          <div class="staging-actions">
+            <button class="btn-clear" onclick="clearStagingList()" title="Xóa toàn bộ tem đang chờ lưu">
+              <i class="fa-solid fa-trash me-1"></i> Xóa Hết
+            </button>
+            <button class="btn-commit" id="btnCommit" onclick="showCommitModal()">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span id="lblCommitBtn">LƯU VÀO IP SẢN XUẤT</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:40px;">#</th>
+                <th>Mã Tem (Barcode ID)</th>
+                <th>Planning Code</th>
+                <th>Size</th>
+                <th>Ca</th>
+                <th>Số Đôi</th>
+                <th>Ngày Quét</th>
+                <th>Giờ Quét</th>
+                <th style="width:50px; text-align:center;">Xóa</th>
+              </tr>
+            </thead>
+            <tbody id="stagingTableBody">
+              <tr>
+                <td colspan="9" class="empty-state">
+                  <i class="fa-solid fa-barcode" style="font-size:32px; opacity:0.3; margin-bottom:8px; display:block;"></i>
+                  Chưa có tem nào trong danh sách tạm. Hãy hướng camera vào tem hoặc bấm cò súng quét!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Confirm Save Modal -->
+  <div class="modal-overlay" id="commitModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="font-weight:800; font-size:15px; color:#ffffff; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-cloud-arrow-up text-accent"></i>
+          Xác Nhận Lưu Vào IP Sản Xuất
+        </div>
+        <i class="fa-solid fa-times" style="color:var(--text-muted); cursor:pointer;" onclick="closeCommitModal()"></i>
+      </div>
+
+      <div class="modal-body" id="commitModalBody">
+        Đang chuẩn bị dữ liệu gộp...
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cam btn-cam-secondary" onclick="closeCommitModal()">Hủy Bỏ</button>
+        <button class="btn-commit" id="btnConfirmCommit" onclick="executeCommitScans()">
+          <i class="fa-solid fa-check"></i> Xác Nhận Lưu Ngay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast -->
+  <div id="toast">
+    <i class="fa-solid fa-circle-check" id="toastIcon"></i>
+    <span id="toastMsg">Thông báo</span>
+  </div>
+
+  <div id="hiddenScanFileHelper" style="display:none;"></div>
+
+  <script>
+    // ========================================================
+    // BACKEND API CONFIGURATION (Google Apps Script Gateway)
+    // ========================================================
+    const GAS_API_URL = window.location.origin.includes('workers.dev')
+      ? (window.location.origin + '/api')
+      : "https://script.google.com/macros/s/AKfycbz6_DifKwtYEkOMMCv_FqrTmXGMeBeREkigW891lxVSadepanEHjFe_d85DrbZxgK6o/exec";
+
+    // Application Global State
+    const state = {
+      currentUser: null,
+      sessionToken: "",
+      currentShift: "Ca A",
+      productDate: new Date().toISOString().split('T')[0],
+      stagingScans: [],
+      scannedHistorySet: new Set(),
+      html5QrScanner: null,
+      isScanningActive: false,
+      currentCameraFacing: "environment", // 'environment' (rear) or 'user' (front)
+      lastScannedText: "",
+      lastScannedAt: 0
+    };
+
+    // ========================================================
+    // AUDIO FEEDBACK (Web Audio API)
+    // ========================================================
+    function playBeep(isSuccess = true) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        if (isSuccess) {
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High clear beep (A5)
+          gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.12);
+        } else {
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime); // Low buzz warning
+          gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.25);
+        }
+      } catch (e) {}
+
+      // Trigger Haptic Vibration on mobile if supported
+      if (navigator.vibrate) {
+        navigator.vibrate(isSuccess ? [80] : [100, 50, 100]);
+      }
+    }
+
+    function showToast(msg, type = "success") {
+      const toast = document.getElementById("toast");
+      const icon = document.getElementById("toastIcon");
+      const text = document.getElementById("toastMsg");
+
+      text.innerText = msg;
+      toast.className = type + " show";
+      icon.className = type === "success" ? "fa-solid fa-circle-check text-success" :
+                       type === "error" ? "fa-solid fa-triangle-exclamation text-danger" :
+                       "fa-solid fa-circle-info text-accent";
+
+      setTimeout(() => { toast.classList.remove("show"); }, 2800);
+    }
+
+    // ========================================================
+    // AUTHENTICATION & LOGIN LOGIC
+    // ========================================================
+    function initAuth() {
+      // Check saved session in localStorage
+      const savedUserStr = localStorage.getItem("yusung_scanner_user");
+      const savedToken = localStorage.getItem("yusung_scanner_token");
+
+      if (savedUserStr && savedToken) {
+        try {
+          const user = JSON.parse(savedUserStr);
+          state.currentUser = user;
+          state.sessionToken = savedToken;
+          switchToAppScreen();
+          return;
+        } catch (e) {}
+      }
+
+      switchToLoginScreen();
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById("inputPassword");
+      const icon = document.getElementById("btnTogglePwd");
+      if (input.type === "password") {
+        input.type = "text";
+        icon.className = "fa-solid fa-eye-slash toggle-pwd";
+      } else {
+        input.type = "password";
+        icon.className = "fa-solid fa-eye toggle-pwd";
+      }
+    }
+
+    async function handleLoginSubmit(event) {
+      event.preventDefault();
+      const username = document.getElementById("inputUsername").value.trim();
+      const password = document.getElementById("inputPassword").value;
+      const rememberMe = document.getElementById("chkRememberMe").checked;
+      const btn = document.getElementById("btnLogin");
+      const errBox = document.getElementById("loginError");
+      const errText = document.getElementById("loginErrorText");
+
+      if (!username || !password) return;
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác thực...';
+      errBox.style.display = "none";
+
+      try {
+        // Gọi trực tiếp đến Google Apps Script REST API
+        const targetUrl = GAS_API_URL + "?action=login" +
+          "&username=" + encodeURIComponent(username) +
+          "&password=" + encodeURIComponent(password) +
+          "&rememberMe=" + (rememberMe ? "true" : "false");
+
+        const res = await fetch(targetUrl);
+        const data = await res.json();
+
+        if (data && data.status === true) {
+          state.currentUser = data.user || { username: username, fullName: username };
+          state.sessionToken = data.sessionToken || ("TOKEN_" + Date.now());
+
+          if (rememberMe) {
+            localStorage.setItem("yusung_scanner_user", JSON.stringify(state.currentUser));
+            localStorage.setItem("yusung_scanner_token", state.sessionToken);
+          }
+
+          showToast("Đăng nhập thành công! Chào mừng " + (state.currentUser.fullName || username), "success");
+          switchToAppScreen();
+        } else {
+          errText.innerText = data.message || "Tên đăng nhập hoặc mật khẩu không chính xác.";
+          errBox.style.display = "flex";
+          playBeep(false);
+        }
+      } catch (err) {
+        console.error("Login API error:", err);
+        errText.innerText = "Không thể kết nối máy chủ Google Sheet. Vui lòng thử lại!";
+        errBox.style.display = "flex";
+        playBeep(false);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> <span>ĐĂNG NHẬP HỆ THỐNG</span>';
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Bạn có chắc chắn muốn đăng xuất tài khoản?")) {
+        stopCameraScanner();
+        localStorage.removeItem("yusung_scanner_user");
+        localStorage.removeItem("yusung_scanner_token");
+        state.currentUser = null;
+        state.sessionToken = "";
+        switchToLoginScreen();
+      }
+    }
+
+    function switchToLoginScreen() {
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("appScreen").classList.add("hidden");
+    }
+
+    function switchToAppScreen() {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("appScreen").classList.remove("hidden");
+
+      // Update User Profile Badge
+      const user = state.currentUser || {};
+      document.getElementById("lblUserDisplay").innerText = (user.fullName || user.username || "Operator") + " (" + (user.username || "") + ")";
+
+      // Set default date
+      document.getElementById("inputProductDate").value = state.productDate;
+
+      // Load initial duplicate log history
+      loadScannedHistory();
+
+      // Start camera automatically for operator convenience
+      setTimeout(() => {
+        startCameraScanner();
+      }, 300);
+
+      // Auto focus barcode gun input
+      setTimeout(() => {
+        const gunInput = document.getElementById("inputGunBarcode");
+        if (gunInput) gunInput.focus();
+      }, 500);
+    }
+
+    // ========================================================
+    // CONTEXT SETTINGS (CA & NGÀY)
+    // ========================================================
+    function setShift(shiftName) {
+      state.currentShift = shiftName;
+      document.getElementById("btnShiftA").classList.toggle("active", shiftName === "Ca A");
+      document.getElementById("btnShiftB").classList.toggle("active", shiftName === "Ca B");
+      showToast("Đã chọn: " + shiftName, "info");
+    }
+
+    function onDateChange() {
+      state.productDate = document.getElementById("inputProductDate").value;
+    }
+
+    // ========================================================
+    // LOAD PREVIOUS SCANNED BARCODES (ANTI-DUPLICATE CACHE)
+    // ========================================================
+    async function loadScannedHistory() {
+      try {
+        const res = await fetch(GAS_API_URL + "?action=getBarcodeLog");
+        const data = await res.json();
+        if (data && data.status === true && Array.isArray(data.list)) {
+          data.list.forEach(id => state.scannedHistorySet.add(String(id).trim()));
+          console.log("Loaded existing scanned history count:", state.scannedHistorySet.size);
+        }
+      } catch (e) {
+        console.warn("Could not fetch remote scanned history:", e);
+      }
+    }
+
+    // ========================================================
+    // NATIVE HARDWARE CAMERA SCANNER (60 FPS DIRECT ACCESS)
+    // ========================================================
+    function toggleCameraScanner() {
+      if (state.isScanningActive) {
+        stopCameraScanner();
+      } else {
+        startCameraScanner();
+      }
+    }
+
+    function startCameraScanner() {
+      const btn = document.getElementById("btnToggleCam");
+      const viewBox = document.getElementById("cameraViewBox");
+      const offNotice = document.getElementById("cameraOffNotice");
+      const laser = document.getElementById("laserLine");
+      const statusText = document.getElementById("camStatusText");
+
+      offNotice.classList.add("hidden");
+      laser.style.display = "block";
+      statusText.innerHTML = '<span class="pulse-dot"></span> Đang quét liên tục...';
+
+      state.isScanningActive = true;
+      btn.className = "btn-cam btn-cam-danger";
+      btn.innerHTML = '<i class="fa-solid fa-stop"></i> Tắt Camera';
+
+      cleanUpHardwareTracks();
+
+      setTimeout(() => {
+        if (!state.isScanningActive) return;
+
+        try {
+          if (!state.html5QrScanner) {
+            const formats = [
+              Html5QrcodeSupportedFormats.CODE_128,
+              Html5QrcodeSupportedFormats.QR_CODE,
+              Html5QrcodeSupportedFormats.CODE_39,
+              Html5QrcodeSupportedFormats.EAN_13
+            ];
+            state.html5QrScanner = new Html5Qrcode("qrReader", {
+              formatsToSupport: formats,
+              experimentalFeatures: { useBarCodeDetectorIfSupported: true },
+              verbose: false
+            });
+          }
+
+          const scanConfig = {
+            fps: 15,
+            qrbox: function(viewfinderWidth, viewfinderHeight) {
+              const w = Math.min(Math.floor(viewfinderWidth * 0.90), 340);
+              const h = Math.min(Math.floor(viewfinderHeight * 0.65), 200);
+              return { width: Math.max(w, 200), height: Math.max(h, 140) };
+            }
+          };
+
+          state.html5QrScanner.start(
+            { facingMode: state.currentCameraFacing },
+            scanConfig,
+            function(decodedText) {
+              handleBarcodeDetected(decodedText);
+            },
+            function(err) {}
+          ).catch(function(err) {
+            console.warn("Lỗi mở camera:", err);
+            // Fallback sang camera user nếu facingMode environment không khả dụng
+            state.html5QrScanner.start(
+              { facingMode: "user" },
+              scanConfig,
+              function(decodedText) { handleBarcodeDetected(decodedText); },
+              function(e) {}
+            ).catch(function(finalErr) {
+              alert("Không thể mở Camera: " + (finalErr.message || finalErr) + ". Vui lòng kiểm tra quyền Camera trong cài đặt!");
+              stopCameraScanner();
+            });
+          });
+        } catch (e) {
+          console.error("Camera init error:", e);
+          stopCameraScanner();
+        }
+      }, 60);
+    }
+
+    function stopCameraScanner() {
+      const btn = document.getElementById("btnToggleCam");
+      const offNotice = document.getElementById("cameraOffNotice");
+      const laser = document.getElementById("laserLine");
+      const statusText = document.getElementById("camStatusText");
+
+      state.isScanningActive = false;
+      btn.className = "btn-cam btn-cam-primary";
+      btn.innerHTML = '<i class="fa-solid fa-camera"></i> Bật Camera Quét';
+
+      laser.style.display = "none";
+      offNotice.classList.remove("hidden");
+      statusText.innerHTML = '<span style="color:var(--text-muted);">● Camera đã tắt</span>';
+
+      cleanUpHardwareTracks();
+    }
+
+    function switchCameraFacing() {
+      state.currentCameraFacing = (state.currentCameraFacing === "environment") ? "user" : "environment";
+      showToast("Đã chuyển sang camera: " + (state.currentCameraFacing === "environment" ? "Sau (Chính)" : "Trước"), "info");
+      if (state.isScanningActive) {
+        startCameraScanner();
+      }
+    }
+
+    function cleanUpHardwareTracks() {
+      try {
+        const video = document.querySelector("#qrReader video");
+        if (video && video.srcObject) {
+          const stream = video.srcObject;
+          if (stream && typeof stream.getTracks === "function") {
+            stream.getTracks().forEach(t => { try { t.stop(); } catch(e) {} });
+          }
+          video.srcObject = null;
+        }
+      } catch (e) {}
+
+      if (state.html5QrScanner) {
+        try {
+          const stateCode = typeof state.html5QrScanner.getState === "function" ? state.html5QrScanner.getState() : 2;
+          if (stateCode === 2 || stateCode === 3) {
+            state.html5QrScanner.stop().catch(() => {});
+          }
+          state.html5QrScanner.clear();
+        } catch (e) {}
+        state.html5QrScanner = null;
+      }
+    }
+
+    // ========================================================
+    // NATIVE CAMERA PHOTO SCAN FALLBACK
+    // ========================================================
+    function handleNativePhoto(input) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      showToast("Đang nhận diện mã vạch từ ảnh chụp...", "info");
+
+      try {
+        const helper = new Html5Qrcode("hiddenScanFileHelper");
+        helper.scanFile(file, false)
+          .then(decodedText => {
+            handleBarcodeDetected(decodedText);
+            input.value = "";
+            try { helper.clear(); } catch(e) {}
+          })
+          .catch(err => {
+            showToast("Không tìm thấy mã vạch trong ảnh chụp. Vui lòng chụp rõ nét hơn!", "error");
+            playBeep(false);
+            input.value = "";
+            try { helper.clear(); } catch(e) {}
+          });
+      } catch (e) {
+        input.value = "";
+      }
+    }
+
+    // ========================================================
+    // BARCODE PROCESSING & ANTI-DUPLICATE
+    // ========================================================
+    function handleBarcodeDetected(rawBarcode) {
+      rawBarcode = String(rawBarcode || "").trim();
+      if (!rawBarcode) return;
+
+      const now = Date.now();
+      // Chống quét lặp liên tục cùng 1 mã trong 1.5 giây khi camera vẫn chĩa vào tem
+      if (rawBarcode === state.lastScannedText && (now - state.lastScannedAt) < 1500) {
+        return;
+      }
+      state.lastScannedText = rawBarcode;
+      state.lastScannedAt = now;
+
+      // Phân tích cú pháp Barcode: IP|PLANNING_CODE|SIZE|SHIFT|DATE|QTY|BARCODE_ID
+      const parts = rawBarcode.split('|');
+      let planningCode = "";
+      let size = "Standard";
+      let shift = state.currentShift;
+      let productDate = state.productDate;
+      let qty = 1;
+      let barcodeId = rawBarcode;
+
+      if (parts.length >= 6 && parts[0] === 'IP') {
+        planningCode = parts[1];
+        size = parts[2];
+        shift = parts[3] || state.currentShift;
+        productDate = parts[4] || state.productDate;
+        qty = Number(parts[5]) || 1;
+        barcodeId = parts[6] || rawBarcode;
+      } else {
+        planningCode = rawBarcode;
+        size = "Standard";
+        qty = 1;
+        barcodeId = rawBarcode;
+      }
+
+      // 1. Kiểm tra trùng lặp trong Bảng tạm (Staging)
+      const duplicateInStaging = state.stagingScans.some(item => item.barcodeId === barcodeId);
+      if (duplicateInStaging) {
+        playBeep(false);
+        showToast("CẢNH BÁO: Tem [" + barcodeId + "] vừa được quét trong danh sách tạm!", "warning");
+        return;
+      }
+
+      // 2. Kiểm tra trùng lặp trong Lịch sử IP_BARCODE_LOG đã lưu
+      if (state.scannedHistorySet.has(barcodeId)) {
+        playBeep(false);
+        showToast("CẢNH BÁO: Tem [" + barcodeId + "] đã được lưu trước đó vào hệ thống!", "error");
+        return;
+      }
+
+      // 3. Hợp lệ -> Phát tiếng Bíp vui tươi và nạp vào danh sách chờ lưu
+      playBeep(true);
+
+      const scanTimeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      state.stagingScans.unshift({
+        barcodeId: barcodeId,
+        rawBarcode: rawBarcode,
+        planningCode: planningCode,
+        size: size,
+        shift: shift,
+        productDate: productDate,
+        qty: qty,
+        scanTime: scanTimeStr,
+        scannedBy: (state.currentUser && state.currentUser.username) || "Operator"
+      });
+
+      // Cập nhật giao diện
+      updateUI();
+      showToast("Đã quét mã: " + barcodeId + " (" + planningCode + " - Size " + size + ")", "success");
+
+      // Auto refocuse barcode gun input
+      const gunInput = document.getElementById("inputGunBarcode");
+      if (gunInput) {
+        gunInput.value = "";
+        gunInput.focus();
+      }
+    }
+
+    // Xử lý súng quét mã vạch / gõ thủ công
+    function onGunKeyDown(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleManualAdd();
+      }
+    }
+
+    function handleManualAdd() {
+      const gunInput = document.getElementById("inputGunBarcode");
+      const val = gunInput.value.trim();
+      if (!val) return;
+      handleBarcodeDetected(val);
+      gunInput.value = "";
+    }
+
+    // ========================================================
+    // UI RENDERING & STAGING TABLE
+    // ========================================================
+    function updateUI() {
+      const tbody = document.getElementById("stagingTableBody");
+      const totalPairsEl = document.getElementById("kpiTotalPairs");
+      const planningsCountEl = document.getElementById("kpiPlanningsCount");
+      const lastScanEl = document.getElementById("kpiLastScan");
+      const badgeCount = document.getElementById("badgeStagingCount");
+      const lblCommit = document.getElementById("lblCommitBtn");
+
+      let totalPairs = 0;
+      const planningSet = new Set();
+
+      state.stagingScans.forEach(item => {
+        totalPairs += (Number(item.qty) || 1);
+        if (item.planningCode) planningSet.add(item.planningCode);
+      });
+
+      totalPairsEl.innerText = totalPairs;
+      planningsCountEl.innerText = planningSet.size;
+      badgeCount.innerText = state.stagingScans.length + " tem";
+      lblCommit.innerText = "LƯU (" + totalPairs + " ĐÔI) VÀO IP SẢN XUẤT";
+
+      if (state.stagingScans.length > 0) {
+        const latest = state.stagingScans[0];
+        lastScanEl.innerText = latest.planningCode + " (" + latest.size + ")";
+      } else {
+        lastScanEl.innerText = "-";
+      }
+
+      if (state.stagingScans.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="empty-state">
+              <i class="fa-solid fa-barcode" style="font-size:32px; opacity:0.3; margin-bottom:8px; display:block;"></i>
+              Chưa có tem nào trong danh sách tạm. Hãy hướng camera vào tem hoặc bấm cò súng quét!
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      let html = "";
+      state.stagingScans.forEach((item, index) => {
+        html += `
+          <tr>
+            <td style="color:var(--text-muted); font-weight:700;">${state.stagingScans.length - index}</td>
+            <td style="font-family:monospace; font-weight:700; color:#38bdf8;">${escapeHtml(item.barcodeId)}</td>
+            <td style="font-weight:700; color:#ffffff;">${escapeHtml(item.planningCode)}</td>
+            <td><span class="badge-size">${escapeHtml(item.size)}</span></td>
+            <td>${escapeHtml(item.shift)}</td>
+            <td style="font-weight:700; color:#10b981;">${item.qty}</td>
+            <td style="color:var(--text-muted);">${escapeHtml(item.productDate)}</td>
+            <td style="color:var(--text-muted); font-size:12px;">${escapeHtml(item.scanTime)}</td>
+            <td style="text-align:center;">
+              <button class="btn-delete-row" onclick="removeStagingItem(${index})" title="Xóa tem này">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function removeStagingItem(index) {
+      if (index >= 0 && index < state.stagingScans.length) {
+        const removed = state.stagingScans.splice(index, 1)[0];
+        updateUI();
+        showToast("Đã xóa tem: " + removed.barcodeId, "info");
+      }
+    }
+
+    function clearStagingList() {
+      if (state.stagingScans.length === 0) return;
+      if (confirm("Bạn có chắc chắn muốn xóa toàn bộ danh sách tem đang chờ lưu?")) {
+        state.stagingScans = [];
+        updateUI();
+        showToast("Đã xóa sạch danh sách tạm", "info");
+      }
+    }
+
+    // ========================================================
+    // COMMIT SCANS: GỘP PLANNING CODE & LƯU VÀO IP_PRODUCTION
+    // CẬP NHẬT IP_BARCODE_LOG (SCANNED_BY, SCANNED_AT)
+    // ========================================================
+    function showCommitModal() {
+      if (state.stagingScans.length === 0) {
+        alert("Danh sách tạm đang trống. Hãy quét ít nhất 1 mã tem trước khi lưu!");
+        return;
+      }
+
+      // Tổng hợp tóm tắt việc gộp Planning Code
+      const summaryMap = new Map();
+      let totalQty = 0;
+
+      state.stagingScans.forEach(item => {
+        const key = item.planningCode || "UNKNOWN";
+        summaryMap.set(key, (summaryMap.get(key) || 0) + (Number(item.qty) || 1));
+        totalQty += (Number(item.qty) || 1);
+      });
+
+      let summaryHtml = `
+        <div style="background:#0f172a; padding:12px; border-radius:10px; margin-bottom:14px; border:1px solid var(--card-border);">
+          <div style="font-weight:700; color:#38bdf8; margin-bottom:6px;">
+            <i class="fa-solid fa-calculator me-1"></i> Tổng kết số lượng: <b>${totalQty} đôi</b> (${state.stagingScans.length} tem)
+          </div>
+          <div style="font-size:12px; color:var(--text-muted);">
+            Người quét: <b>${escapeHtml((state.currentUser && state.currentUser.username) || "Operator")}</b> | Ca: <b>${escapeHtml(state.currentShift)}</b>
+          </div>
+        </div>
+
+        <div style="font-weight:700; margin-bottom:8px; font-size:13px; color:#ffffff;">
+          Tự động gộp thành <b>${summaryMap.size}</b> dòng Planning Code vào bảng IP_PRODUCTION:
+        </div>
+        <ul style="padding-left:18px; margin-bottom:14px; font-size:13px; line-height:1.7;">
+      `;
+
+      summaryMap.forEach((qty, plan) => {
+        summaryHtml += `<li>Planning Code: <b style="color:#ffffff;">${escapeHtml(plan)}</b> &rarr; <b style="color:#10b981;">${qty} đôi</b></li>`;
+      });
+
+      summaryHtml += `
+        </ul>
+        <div style="font-size:12px; color:#94a3b8; background:rgba(14, 165, 233, 0.1); padding:10px; border-radius:8px; border-left:3px solid var(--accent);">
+          <i class="fa-solid fa-circle-info text-accent me-1"></i>
+          Hệ thống sẽ lưu vào <b>IP_PRODUCTION</b> đồng thời đánh dấu trạng thái <b>SCANNED</b>, ghi nhận người quét <b>SCANNED_BY</b> và thời gian vào bảng <b>IP_BARCODE_LOG</b>.
+        </div>
+      `;
+
+      document.getElementById("commitModalBody").innerHTML = summaryHtml;
+      document.getElementById("commitModal").style.display = "flex";
+    }
+
+    function closeCommitModal() {
+      document.getElementById("commitModal").style.display = "none";
+    }
+
+    async function executeCommitScans() {
+      const btn = document.getElementById("btnConfirmCommit");
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang ghi vào Google Sheets...';
+
+      const username = (state.currentUser && state.currentUser.username) || "Operator";
+      const payload = {
+        action: "commitScans",
+        sessionToken: state.sessionToken,
+        username: username,
+        scanEntries: state.stagingScans
+      };
+
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (data && data.status === true) {
+          // Ghi nhận các barcode đã lưu vào cache chống trùng
+          state.stagingScans.forEach(item => {
+            if (item.barcodeId) state.scannedHistorySet.add(item.barcodeId);
+          });
+
+          const savedCount = state.stagingScans.length;
+          state.stagingScans = [];
+          updateUI();
+          closeCommitModal();
+
+          playBeep(true);
+          showToast(data.message || "Lưu thành công " + savedCount + " tem vào IP Sản Xuất!", "success");
+        } else {
+          alert("Lỗi khi lưu dữ liệu: " + (data.message || "Máy chủ không phản hồi."));
+          playBeep(false);
+        }
+      } catch (err) {
+        console.error("executeCommitScans error:", err);
+        alert("Lỗi kết nối khi gửi dữ liệu lên Google Sheets: " + (err.message || err));
+        playBeep(false);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Xác Nhận Lưu Ngay';
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Khởi chạy ứng dụng
+    window.addEventListener("DOMContentLoaded", () => {
+      initAuth();
+    });
+  </script>
+</body>
+</html>
