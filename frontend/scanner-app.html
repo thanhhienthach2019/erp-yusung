@@ -117,6 +117,83 @@
       margin-top: 5px;
     }
 
+    /* Division Switcher (Segmented Glass Control) */
+    .division-switch-container {
+      display: flex;
+      background: rgba(9, 14, 26, 0.85);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 4px;
+      gap: 6px;
+      margin-bottom: 22px;
+    }
+
+    .division-tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .division-tab:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .division-tab.active {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+    }
+
+    .division-tab.active.cp-active {
+      background: linear-gradient(135deg, #7c3aed, #9333ea);
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+    }
+
+    /* Header Division Badge / Switcher */
+    .division-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .division-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+
+    .division-badge.cp-mode {
+      background: rgba(168, 85, 247, 0.15);
+      border-color: rgba(192, 132, 252, 0.4);
+      color: #c084fc;
+    }
+
+    .division-badge.cp-mode:hover {
+      box-shadow: 0 0 12px rgba(192, 132, 252, 0.35);
+    }
+
     .form-group { margin-bottom: 18px; }
     .form-label {
       display: block;
@@ -930,11 +1007,23 @@
   <div id="loginScreen">
     <div class="login-card">
       <div class="login-brand">
-        <div class="brand-icon-box">
-          <i class="fa-solid fa-barcode"></i>
+        <div class="brand-icon-box" id="brandIconBox">
+          <i class="fa-solid fa-barcode" id="brandIcon"></i>
         </div>
         <div class="brand-title">YUSUNG SCANNER</div>
-        <div class="brand-desc">Phân Hệ Quét Tem Sản Xuất (Mobile & Tablet)</div>
+        <div class="brand-desc" id="brandDesc">Phân Hệ Quét Tem Sản Xuất Phylon (IP)</div>
+      </div>
+
+      <!-- Division Switcher: IP SCAN vs CP SCAN -->
+      <div class="division-switch-container">
+        <button type="button" class="division-tab active" id="btnLoginDivIP" onclick="setScanDivision('IP')">
+          <i class="fa-solid fa-shoe-prints"></i>
+          <span>IP SCAN (Phylon)</span>
+        </button>
+        <button type="button" class="division-tab" id="btnLoginDivCP" onclick="setScanDivision('CP')">
+          <i class="fa-solid fa-vial-virus"></i>
+          <span>CP SCAN (Compound)</span>
+        </button>
       </div>
 
       <div id="loginError" class="error-banner">
@@ -989,8 +1078,8 @@
     <!-- Top Sticky Header -->
     <header class="app-header">
       <div class="header-logo-group">
-        <div class="header-logo-badge">
-          <i class="fa-solid fa-barcode"></i>
+        <div class="header-logo-badge" id="headerLogoBadge">
+          <i class="fa-solid fa-barcode" id="headerLogoIcon"></i>
         </div>
         <div>
           <div class="header-app-title">YUSUNG SCANNER</div>
@@ -998,6 +1087,15 @@
             <span class="pulse-dot"></span>
             Trực Tuyến
           </div>
+        </div>
+      </div>
+
+      <!-- Quick Division Switcher Pill -->
+      <div style="display:flex; align-items:center;">
+        <div class="division-badge" id="headerDivisionBadge" onclick="toggleDivisionQuickly()" title="Bấm để chuyển đổi giữa IP Scan và CP Scan">
+          <i class="fa-solid fa-shoe-prints" id="headerDivIcon"></i>
+          <span id="headerDivText">IP SCAN</span>
+          <i class="fa-solid fa-repeat" style="font-size:10px; opacity:0.7; margin-left:4px;"></i>
         </div>
       </div>
 
@@ -1091,7 +1189,7 @@
         <div class="kpi-grid tablet-only">
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiTotalPairsDesk" style="color:var(--success);">0</div>
-            <div class="kpi-tile-label">Sản Lượng Chờ Lưu</div>
+            <div class="kpi-tile-label" id="lblKpi1Desk">Sản Lượng Chờ Lưu</div>
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiPlanningsDesk" style="color:var(--accent);">0</div>
@@ -1110,7 +1208,7 @@
         <div class="kpi-grid mobile-only">
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiTotalPairsMob" style="color:var(--success);">0</div>
-            <div class="kpi-tile-label">Sản Lượng Chờ Lưu</div>
+            <div class="kpi-tile-label" id="lblKpi1Mob">Sản Lượng Chờ Lưu</div>
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiPlanningsMob" style="color:var(--accent);">0</div>
@@ -1151,16 +1249,17 @@
                   <th>Mã Tem (Barcode ID)</th>
                   <th>Model Code</th>
                   <th>Pantone</th>
-                  <th>Size</th>
+                  <th id="thSepHeader">Màu Ngăn</th>
+                  <th id="thSizeHeader">Size</th>
                   <th>Ca Làm Việc</th>
-                  <th>Số Lượng</th>
+                  <th id="thQtyHeader">Số Lượng</th>
                   <th>Thời Gian Quét</th>
                   <th style="width:40px; text-align:center;">Xóa</th>
                 </tr>
               </thead>
               <tbody id="stagingTableBody">
                 <tr>
-                  <td colspan="9" class="empty-state">
+                  <td colspan="10" class="empty-state" id="emptyStateTableCell">
                     <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
                     Chưa có tem nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!
                   </td>
@@ -1237,6 +1336,7 @@
     const state = {
       currentUser: null,
       sessionToken: "",
+      division: localStorage.getItem("yusung_scanner_division") || "IP",
       currentShift: "Ca A",
       productDate: new Date().toISOString().split('T')[0],
       stagingScans: [],
@@ -1295,9 +1395,94 @@
     }
 
     // ========================================================
+    // DIVISION SWITCHING & DUAL UI
+    // ========================================================
+    function setScanDivision(div) {
+      if (state.division === div) return;
+      if (state.stagingScans.length > 0) {
+        if (!confirm("Bạn đang có " + state.stagingScans.length + " tem chưa ghi nhận. Chuyển phân hệ sẽ xóa danh sách tạm này, bạn có muốn tiếp tục?")) {
+          return;
+        }
+        state.stagingScans = [];
+      }
+      state.division = div;
+      localStorage.setItem("yusung_scanner_division", div);
+      applyDivisionUI();
+      loadScannedHistory();
+      updateUI();
+      showToast("Đã chuyển sang: " + (div === "CP" ? "CP SCAN (Compound)" : "IP SCAN (Phylon)"), "info");
+    }
+
+    function toggleDivisionQuickly() {
+      const nextDiv = (state.division === "CP") ? "IP" : "CP";
+      setScanDivision(nextDiv);
+    }
+
+    function applyDivisionUI() {
+      const isCp = (state.division === "CP");
+
+      // 1. Nút chọn trên trang đăng nhập
+      const btnIP = document.getElementById("btnLoginDivIP");
+      const btnCP = document.getElementById("btnLoginDivCP");
+      if (btnIP && btnCP) {
+        btnIP.classList.toggle("active", !isCp);
+        btnCP.classList.toggle("active", isCp);
+        btnCP.classList.toggle("cp-active", isCp);
+      }
+
+      // 2. Mô tả thương hiệu trên trang đăng nhập
+      const brandDesc = document.getElementById("brandDesc");
+      if (brandDesc) {
+        brandDesc.innerText = isCp ? "Phân Hệ Quét Tem Sản Xuất Compound (CP)" : "Phân Hệ Quét Tem Sản Xuất Phylon (IP)";
+      }
+
+      // 3. Huy hiệu trên thanh Header
+      const headerDiv = document.getElementById("headerDivisionBadge");
+      const headerIcon = document.getElementById("headerDivIcon");
+      const headerText = document.getElementById("headerDivText");
+      if (headerDiv && headerText && headerIcon) {
+        if (isCp) {
+          headerDiv.classList.add("cp-mode");
+          headerIcon.className = "fa-solid fa-vial-virus";
+          headerText.innerText = "CP SCAN";
+        } else {
+          headerDiv.classList.remove("cp-mode");
+          headerIcon.className = "fa-solid fa-shoe-prints";
+          headerText.innerText = "IP SCAN";
+        }
+      }
+
+      // 4. Nhãn KPI
+      const lblKpi1Desk = document.getElementById("lblKpi1Desk");
+      const lblKpi1Mob = document.getElementById("lblKpi1Mob");
+      if (lblKpi1Desk) lblKpi1Desk.innerText = isCp ? "Khối Lượng Chờ Lưu (kg)" : "Sản Lượng Chờ Lưu (đôi)";
+      if (lblKpi1Mob) lblKpi1Mob.innerText = isCp ? "Khối Lượng Chờ Lưu (kg)" : "Sản Lượng Chờ Lưu (đôi)";
+
+      // 5. Placeholder súng quét
+      const gunInput = document.getElementById("inputGunBarcode");
+      if (gunInput) {
+        gunInput.placeholder = isCp ? "Bắn súng quét hoặc gõ mã mẻ CP (ví dụ: CP261022-L-1234-1)..." : "Bắn súng quét hoặc gõ mã tem IP...";
+      }
+
+      // 6. Tiêu đề cột bảng
+      const thSize = document.getElementById("thSizeHeader");
+      const thQty = document.getElementById("thQtyHeader");
+      const emptyStateCell = document.getElementById("emptyStateTableCell");
+      if (thSize) thSize.innerText = isCp ? "Size (L/S)" : "Size";
+      if (thQty) thQty.innerText = isCp ? "Khối Lượng" : "Số Lượng";
+      if (emptyStateCell) {
+        emptyStateCell.innerHTML = `
+          <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
+          ${isCp ? "Chưa có tem mẻ Compound nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!" : "Chưa có tem nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!"}
+        `;
+      }
+    }
+
+    // ========================================================
     // AUTHENTICATION & LOGIN LOGIC
     // ========================================================
     function initAuth() {
+      applyDivisionUI();
       const savedUserStr = localStorage.getItem("yusung_scanner_user");
       const savedToken = localStorage.getItem("yusung_scanner_token");
 
@@ -1391,6 +1576,7 @@
     function switchToLoginScreen() {
       document.getElementById("loginScreen").classList.remove("hidden");
       document.getElementById("appScreen").classList.add("hidden");
+      applyDivisionUI();
     }
 
     function switchToAppScreen() {
@@ -1401,6 +1587,7 @@
       document.getElementById("lblUserDisplay").innerText = (user.fullName || user.username || "Operator");
 
       document.getElementById("inputProductDate").value = state.productDate;
+      applyDivisionUI();
       loadScannedHistory();
 
       setTimeout(() => { startCameraScanner(); }, 350);
@@ -1429,11 +1616,12 @@
     // ========================================================
     async function loadScannedHistory() {
       try {
-        const res = await fetch(GAS_API_URL + "?action=getBarcodeLog");
+        state.scannedHistorySet.clear();
+        const res = await fetch(GAS_API_URL + "?action=getBarcodeLog&division=" + encodeURIComponent(state.division || "IP"));
         const data = await res.json();
         if (data && data.status === true && Array.isArray(data.list)) {
           data.list.forEach(id => state.scannedHistorySet.add(String(id).trim()));
-          console.log("Loaded existing scanned count:", state.scannedHistorySet.size);
+          console.log("Loaded existing scanned count for " + state.division + ":", state.scannedHistorySet.size);
         }
       } catch (e) {
         console.warn("Could not fetch remote scanned history:", e);
@@ -1615,7 +1803,7 @@
     }
 
     // ========================================================
-    // BARCODE PROCESSING & ANTI-DUPLICATE
+    // BARCODE PROCESSING & ANTI-DUPLICATE (DUAL IP / CP)
     // ========================================================
     function handleBarcodeDetected(rawBarcode) {
       rawBarcode = String(rawBarcode || "").trim();
@@ -1628,41 +1816,81 @@
       state.lastScannedText = rawBarcode;
       state.lastScannedAt = now;
 
-      // Phân tích Barcode:
-      // Định dạng mã vạch tự do: DIVISION|MODEL_CODE|SIZE|SHIFT|DATE|QTY|BARCODE_ID|PANTONE_CODE|SEPARATOR
-      // (Ví dụ: IP|ON123|7|Ca A|2026-10-22|30|BC261022-A1B2-0001|19-4007|A)
-      // Hoặc 7 phần: IP|ON123|7|Ca A|2026-10-22|30|BC261022-A1B2-0001
-      // Hoặc định dạng cũ: IP|PLANNING_CODE|SIZE|SHIFT|DATE|QTY|BARCODE_ID
-      const parts = rawBarcode.split('|');
-      let division = "IP";
+      const isCpMode = (state.division === "CP");
+      let division = state.division || "IP";
       let modelCode = "";
       let pantoneCode = "";
       let separator = "";
-      let size = "Standard";
+      let size = isCpMode ? "Size L" : "Standard";
       let shift = state.currentShift || "Ca A";
       let productDate = state.productDate || new Date().toISOString().slice(0, 10);
-      let qty = 1;
+      let qty = isCpMode ? 70 : 1;
       let barcodeId = rawBarcode;
 
-      if (parts.length >= 6 && (parts[0].toUpperCase() === 'IP' || parts[0].toUpperCase() === 'SD')) {
-        division = parts[0].trim().toUpperCase();
-        modelCode = parts[1].trim().toUpperCase();
-        size = parts[2].trim();
-        shift = (parts[3] && parts[3].trim()) ? parts[3].trim() : (state.currentShift || "Ca A");
-        productDate = (parts[4] && parts[4].trim()) ? parts[4].trim() : (state.productDate || new Date().toISOString().slice(0, 10));
-        qty = Number(parts[5]) || 1;
-        barcodeId = parts[6] ? parts[6].trim() : rawBarcode;
-        if (parts.length >= 8 && parts[7] && parts[7].trim() !== '-') {
-          pantoneCode = parts[7].trim().toUpperCase();
+      // 1. Phân tích QR JSON nếu có ({ bc, slip, plan, m, p, t, kg, mc, sh, dt, sep })
+      if (rawBarcode.startsWith("{") && rawBarcode.endsWith("}")) {
+        try {
+          const q = JSON.parse(rawBarcode);
+          if (q.bc) barcodeId = q.bc;
+          if (q.m) modelCode = q.m;
+          if (q.p) pantoneCode = q.p;
+          if (q.sep) separator = q.sep;
+          if (q.t) {
+            const bType = String(q.t).toUpperCase();
+            size = (bType === "S" || bType.includes("S")) ? "Size S" : "Size L";
+          }
+          if (q.kg) qty = Number(q.kg) || (size === "Size S" ? 35 : 70);
+          else if (q.qty) qty = Number(q.qty) || 1;
+          if (q.sh) shift = q.sh;
+          if (q.dt) productDate = q.dt;
+          if (isCpMode) division = "CP";
+        } catch(e) {}
+      }
+      // 2. Phân tích theo định dạng Pipe (|)
+      else if (rawBarcode.includes("|")) {
+        const parts = rawBarcode.split("|");
+        const prefix = parts[0] ? parts[0].trim().toUpperCase() : "";
+
+        if (prefix === "CP") {
+          division = "CP";
+          modelCode = parts[1] ? parts[1].trim().toUpperCase() : "";
+          const bType = parts[2] ? parts[2].trim().toUpperCase() : "L";
+          size = (bType === "S" || bType.includes("S")) ? "Size S" : "Size L";
+          qty = Number(parts[3]) || (size === "Size S" ? 35 : 70);
+          shift = (parts[4] && parts[4].trim()) ? parts[4].trim() : (state.currentShift || "Ca A");
+          productDate = (parts[5] && parts[5].trim()) ? parts[5].trim() : (state.productDate || new Date().toISOString().slice(0, 10));
+          barcodeId = parts[6] ? parts[6].trim() : rawBarcode;
+          if (parts.length >= 8 && parts[7] && parts[7].trim() !== "-") pantoneCode = parts[7].trim().toUpperCase();
+          if (parts.length >= 9 && parts[8] && parts[8].trim() !== "-") separator = parts[8].trim().toUpperCase();
+        } else if (parts.length >= 6 && (prefix === "IP" || prefix === "SD")) {
+          division = prefix;
+          modelCode = parts[1].trim().toUpperCase();
+          size = parts[2].trim();
+          shift = (parts[3] && parts[3].trim()) ? parts[3].trim() : (state.currentShift || "Ca A");
+          productDate = (parts[4] && parts[4].trim()) ? parts[4].trim() : (state.productDate || new Date().toISOString().slice(0, 10));
+          qty = Number(parts[5]) || 1;
+          barcodeId = parts[6] ? parts[6].trim() : rawBarcode;
+          if (parts.length >= 8 && parts[7] && parts[7].trim() !== "-") pantoneCode = parts[7].trim().toUpperCase();
+          if (parts.length >= 9 && parts[8] && parts[8].trim() !== "-") separator = parts[8].trim().toUpperCase();
+        } else {
+          modelCode = parts[0].trim().toUpperCase();
+          barcodeId = rawBarcode;
         }
-        if (parts.length >= 9 && parts[8] && parts[8].trim() !== '-') {
-          separator = parts[8].trim().toUpperCase();
-        }
-      } else {
-        modelCode = rawBarcode;
-        size = "Standard";
-        qty = 1;
+      }
+      // 3. Chuỗi đơn 1D
+      else {
         barcodeId = rawBarcode;
+        if (isCpMode) {
+          division = "CP";
+          const isSizeS = rawBarcode.toUpperCase().includes("-S-");
+          size = isSizeS ? "Size S" : "Size L";
+          qty = isSizeS ? 35 : 70;
+          modelCode = rawBarcode;
+        } else {
+          modelCode = rawBarcode;
+          size = "Standard";
+          qty = 1;
+        }
       }
 
       // 1. Kiểm tra trùng lặp trong Bảng tạm (Staging)
@@ -1676,7 +1904,7 @@
       // 2. Kiểm tra trùng lặp trong Lịch sử Hệ Thống
       if (state.scannedHistorySet.has(barcodeId)) {
         playBeep(false);
-        showToast("Mã tem [" + barcodeId + "] đã được ghi nhận sản lượng trên hệ thống trước đó!", "error");
+        showToast("Mã tem [" + barcodeId + "] đã được ghi nhận trên hệ thống trước đó!", "error");
         return;
       }
 
@@ -1701,7 +1929,8 @@
       });
 
       updateUI();
-      showToast("Đã quét: " + modelCode + (pantoneCode ? " (" + pantoneCode + ")" : "") + " - Size " + size + " (" + qty + " đôi)", "success");
+      const unitText = isCpMode ? " kg" : " đôi";
+      showToast("Đã quét: " + (modelCode || barcodeId) + (pantoneCode ? " (" + pantoneCode + ")" : "") + " - " + size + " (" + qty + unitText + ")", "success");
 
       const gunInput = document.getElementById("inputGunBarcode");
       if (gunInput) {
@@ -1733,7 +1962,6 @@
       const mobileList = document.getElementById("mobileCardsList");
       const badgeCount = document.getElementById("badgeStagingCount");
 
-      // Stats Elements
       const totalPairsDesk = document.getElementById("kpiTotalPairsDesk");
       const totalPairsMob = document.getElementById("kpiTotalPairsMob");
       const planningsDesk = document.getElementById("kpiPlanningsDesk");
@@ -1745,25 +1973,30 @@
       const lblBottomPairs = document.getElementById("lblBottomPairs");
       const lblBottomPlannings = document.getElementById("lblBottomPlannings");
 
-      let totalPairs = 0;
+      const isCpMode = (state.division === "CP");
+      const unitStr = isCpMode ? " kg" : " đôi";
+
+      let totalQty = 0;
       const modelSet = new Set();
 
       state.stagingScans.forEach(item => {
-        totalPairs += (Number(item.qty) || 1);
+        totalQty += (Number(item.qty) || (isCpMode ? 70 : 1));
         const mKey = item.modelCode || item.planningCode;
         if (mKey) modelSet.add(mKey);
       });
 
+      totalQty = Math.round(totalQty * 10) / 10;
+
       // Update KPIs
-      totalPairsDesk.innerText = totalPairs;
-      totalPairsMob.innerText = totalPairs;
+      totalPairsDesk.innerText = totalQty + (isCpMode ? " kg" : "");
+      totalPairsMob.innerText = totalQty + (isCpMode ? " kg" : "");
       planningsDesk.innerText = modelSet.size;
       planningsMob.innerText = modelSet.size;
       badgeCount.innerText = state.stagingScans.length + " tem";
 
       if (state.stagingScans.length > 0) {
         const latest = state.stagingScans[0];
-        const latestTxt = (latest.modelCode || latest.planningCode) + " (" + latest.size + " - " + latest.qty + "đ)";
+        const latestTxt = (latest.modelCode || latest.barcodeId) + " (" + latest.size + " - " + latest.qty + (isCpMode ? "kg" : "đ") + ")";
         lastScanDesk.innerText = latestTxt;
         lastScanMob.innerText = latestTxt;
       } else {
@@ -1772,24 +2005,25 @@
       }
 
       // Update Action Button Labels
-      lblCommitDesk.innerText = "GHI NHẬN SẢN LƯỢNG (" + totalPairs + " ĐÔI)";
-      lblBottomPairs.innerText = totalPairs + " đôi";
+      const actionTitle = isCpMode ? "GHI NHẬN KHỐI LƯỢNG" : "GHI NHẬN SẢN LƯỢNG";
+      lblCommitDesk.innerText = actionTitle + " (" + totalQty + unitStr.toUpperCase() + ")";
+      lblBottomPairs.innerText = totalQty + unitStr;
       lblBottomPlannings.innerText = modelSet.size + " Model Code";
 
       // Render Empty State
       if (state.stagingScans.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="9" class="empty-state">
+            <td colspan="10" class="empty-state">
               <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
-              Chưa có tem nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!
+              ${isCpMode ? "Chưa có tem mẻ Compound nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!" : "Chưa có tem nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!"}
             </td>
           </tr>
         `;
         mobileList.innerHTML = `
           <div class="empty-state">
             <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
-            Chưa có tem nào trong danh sách. Hướng camera vào mã tem để quét!
+            ${isCpMode ? "Chưa có tem mẻ Compound nào trong danh sách. Hướng camera vào mã tem để quét!" : "Chưa có tem nào trong danh sách. Hướng camera vào mã tem để quét!"}
           </div>
         `;
         return;
@@ -1802,11 +2036,12 @@
           <tr>
             <td style="color:var(--text-muted); font-weight:700;">${state.stagingScans.length - index}</td>
             <td style="font-family:var(--font-mono); font-weight:700; color:var(--accent);">${escapeHtml(item.barcodeId)}</td>
-            <td style="font-weight:700; color:#ffffff;">${escapeHtml(item.modelCode || item.planningCode)}</td>
+            <td style="font-weight:700; color:#ffffff;">${escapeHtml(item.modelCode || item.planningCode || '-')}</td>
             <td style="color:#94a3b8; font-size:12px;">${escapeHtml(item.pantoneCode || '-')}</td>
+            <td style="color:#cbd5e1; font-size:12px;">${escapeHtml(item.separator || '-')}</td>
             <td><span class="tag-size">${escapeHtml(item.size)}</span></td>
             <td>${escapeHtml(item.shift)}</td>
-            <td><span class="tag-qty">${item.qty} đôi</span></td>
+            <td><span class="tag-qty">${item.qty}${unitStr}</span></td>
             <td style="color:var(--text-muted); font-size:11.5px; font-family:var(--font-mono);">${escapeHtml(item.scanTime)}</td>
             <td style="text-align:center;">
               <button class="btn-delete-item" onclick="removeStagingItem(${index})" title="Xóa tem này">
@@ -1825,12 +2060,13 @@
           <div class="staging-card-item">
             <div class="card-item-main">
               <div class="card-item-plan">
-                ${escapeHtml(item.modelCode || item.planningCode)}
+                ${escapeHtml(item.modelCode || item.barcodeId)}
                 ${item.pantoneCode ? `<span style="font-size:11px; font-weight:600; color:#38bdf8; margin-left:6px; background:rgba(56,189,248,0.12); padding:2px 6px; border-radius:4px;">${escapeHtml(item.pantoneCode)}</span>` : ''}
+                ${item.separator ? `<span style="font-size:11px; font-weight:600; color:#a855f7; margin-left:4px; background:rgba(168,85,247,0.12); padding:2px 6px; border-radius:4px;">${escapeHtml(item.separator)}</span>` : ''}
               </div>
               <div class="card-item-tags">
-                <span class="tag-size">Size ${escapeHtml(item.size)}</span>
-                <span class="tag-qty">${item.qty} đôi</span>
+                <span class="tag-size">${escapeHtml(item.size)}</span>
+                <span class="tag-qty">${item.qty}${unitStr}</span>
                 <span class="tag-meta"><i class="fa-regular fa-clock me-1"></i>${escapeHtml(item.scanTime)}</span>
                 <span class="tag-meta"><i class="fa-solid fa-calendar-day me-1"></i>${escapeHtml(item.productDate)} (${escapeHtml(item.shift)})</span>
               </div>
@@ -1862,14 +2098,15 @@
     }
 
     // ========================================================
-    // PRODUCTION LEDGER & AGGREGATION ENGINE
-    // Gộp theo Model Code + Pantone Code + Product Date + Ca Làm Việc
+    // PRODUCTION LEDGER & AGGREGATION ENGINE (DUAL IP / CP)
     // ========================================================
-    const LEDGER_STORAGE_KEY = "yusung_scanner_production_ledger";
+    const LEDGER_STORAGE_KEY_IP = "yusung_scanner_production_ledger";
+    const LEDGER_STORAGE_KEY_CP = "yusung_scanner_cp_production_ledger";
 
     function getProductionLedger() {
+      const key = (state.division === "CP") ? LEDGER_STORAGE_KEY_CP : LEDGER_STORAGE_KEY_IP;
       try {
-        const raw = localStorage.getItem(LEDGER_STORAGE_KEY);
+        const raw = localStorage.getItem(key);
         return raw ? JSON.parse(raw) : {};
       } catch (e) {
         return {};
@@ -1877,16 +2114,19 @@
     }
 
     function saveProductionLedger(ledger) {
+      const key = (state.division === "CP") ? LEDGER_STORAGE_KEY_CP : LEDGER_STORAGE_KEY_IP;
       try {
-        localStorage.setItem(LEDGER_STORAGE_KEY, JSON.stringify(ledger));
+        localStorage.setItem(key, JSON.stringify(ledger));
       } catch (e) {
         console.warn("Could not save production ledger:", e);
       }
     }
 
-    function getLedgerGroupKey(modelCode, pantoneCode, productDate, shift) {
-      return String(modelCode || "UNKNOWN").trim().toUpperCase() + "___" +
+    function getLedgerGroupKey(modelCode, pantoneCode, separator, productDate, shift) {
+      return (state.division || "IP") + "___" +
+             String(modelCode || "UNKNOWN").trim().toUpperCase() + "___" +
              String(pantoneCode || "").trim().toUpperCase() + "___" +
+             String(separator || "").trim().toUpperCase() + "___" +
              String(productDate || "").trim() + "___" +
              String(shift || "Ca A").trim();
     }
@@ -1894,18 +2134,19 @@
     function aggregateStagingScans() {
       const ledger = getProductionLedger();
       const groupMap = new Map();
+      const isCpMode = (state.division === "CP");
 
       state.stagingScans.forEach(item => {
         const mdl = (item.modelCode || item.planningCode || "UNKNOWN").trim().toUpperCase();
         const pan = (item.pantoneCode || "").trim().toUpperCase();
+        const sep = (item.separator || "").trim().toUpperCase();
         const pDate = (item.productDate || state.productDate).trim();
         const shift = (item.shift || state.currentShift).trim();
-        const size = (item.size || "Standard").trim();
-        const qty = Number(item.qty) || 1;
-        const key = getLedgerGroupKey(mdl, pan, pDate, shift);
+        const size = (item.size || (isCpMode ? "Size L" : "Standard")).trim();
+        const qty = Number(item.qty) || (isCpMode ? 70 : 1);
+        const key = getLedgerGroupKey(mdl, pan, sep, pDate, shift);
 
         if (!groupMap.has(key)) {
-          // Tra cứu dữ liệu đã lưu trước đó trong ca (ví dụ scan 2, 3 tiếng trước)
           const pastEntry = ledger[key] || null;
           const previousQty = pastEntry ? (Number(pastEntry.totalQty) || 0) : 0;
           const previousSizes = pastEntry && pastEntry.sizes ? { ...pastEntry.sizes } : {};
@@ -1913,8 +2154,10 @@
 
           groupMap.set(key, {
             key: key,
+            division: state.division || "IP",
             modelCode: mdl,
             pantoneCode: pan,
+            separator: sep,
             planningCode: mdl,
             productDate: pDate,
             shift: shift,
@@ -1930,14 +2173,14 @@
         }
 
         const grp = groupMap.get(key);
-        grp.newQty += qty;
-        grp.newSizes[size] = (grp.newSizes[size] || 0) + qty;
-        grp.mergedSizes[size] = (grp.mergedSizes[size] || 0) + qty;
+        grp.newQty = Math.round((grp.newQty + qty) * 10) / 10;
+        grp.newSizes[size] = Math.round(((grp.newSizes[size] || 0) + qty) * 10) / 10;
+        grp.mergedSizes[size] = Math.round(((grp.mergedSizes[size] || 0) + qty) * 10) / 10;
         grp.newBarcodes.push(item.barcodeId);
         if (!grp.allBarcodes.includes(item.barcodeId)) {
           grp.allBarcodes.push(item.barcodeId);
         }
-        grp.totalAccumulatedQty = grp.previousQty + grp.newQty;
+        grp.totalAccumulatedQty = Math.round((grp.previousQty + grp.newQty) * 10) / 10;
       });
 
       return Array.from(groupMap.values());
@@ -1952,6 +2195,8 @@
         return;
       }
 
+      const isCpMode = (state.division === "CP");
+      const unitStr = isCpMode ? "kg" : "đôi";
       const groups = aggregateStagingScans();
       let totalNewQty = 0;
       let totalAccumulatedAll = 0;
@@ -1960,17 +2205,19 @@
         totalNewQty += g.newQty;
         totalAccumulatedAll += g.totalAccumulatedQty;
       });
+      totalNewQty = Math.round(totalNewQty * 10) / 10;
+      totalAccumulatedAll = Math.round(totalAccumulatedAll * 10) / 10;
 
       let groupsHtml = "";
       groups.forEach((grp, idx) => {
-        // Liệt kê chi tiết sizes
         const sizeBadges = Object.keys(grp.mergedSizes).map(sz => {
           const newSzQty = grp.newSizes[sz] || 0;
           const totalSzQty = grp.mergedSizes[sz] || 0;
+          const szLabel = isCpMode ? escapeHtml(sz) : ("Size " + escapeHtml(sz));
           if (grp.hasPastData && grp.previousQty > 0) {
-            return `<span style="display:inline-block; background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); border-radius:6px; padding:2px 7px; margin:2px; font-size:11.5px; font-family:var(--font-mono);">Size ${escapeHtml(sz)}: <b>${totalSzQty}</b> đôi <span style="color:#94a3b8; font-size:10.5px;">(+${newSzQty})</span></span>`;
+            return `<span style="display:inline-block; background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); border-radius:6px; padding:2px 7px; margin:2px; font-size:11.5px; font-family:var(--font-mono);">${szLabel}: <b>${totalSzQty}</b> ${unitStr} <span style="color:#94a3b8; font-size:10.5px;">(+${newSzQty})</span></span>`;
           }
-          return `<span style="display:inline-block; background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); border-radius:6px; padding:2px 7px; margin:2px; font-size:11.5px; font-family:var(--font-mono);">Size ${escapeHtml(sz)}: <b>${totalSzQty}</b> đôi</span>`;
+          return `<span style="display:inline-block; background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); border-radius:6px; padding:2px 7px; margin:2px; font-size:11.5px; font-family:var(--font-mono);">${szLabel}: <b>${totalSzQty}</b> ${unitStr}</span>`;
         }).join(" ");
 
         groupsHtml += `
@@ -1980,26 +2227,27 @@
                 <div style="font-weight:800; font-size:14px; color:#ffffff;">
                   <i class="fa-solid fa-cube text-accent me-1"></i> Model: <b>${escapeHtml(grp.modelCode)}</b>
                   ${grp.pantoneCode ? `<span style="background:rgba(56,189,248,0.15); color:#38bdf8; font-size:11.5px; padding:2px 7px; border-radius:4px; margin-left:6px; font-family:var(--font-mono);">${escapeHtml(grp.pantoneCode)}</span>` : ''}
+                  ${grp.separator ? `<span style="background:rgba(168,85,247,0.15); color:#c084fc; font-size:11.5px; padding:2px 7px; border-radius:4px; margin-left:4px; font-family:var(--font-mono);">${escapeHtml(grp.separator)}</span>` : ''}
                 </div>
                 <div style="font-size:11.5px; color:#94a3b8; margin-top:2px;">
                   <i class="fa-regular fa-calendar-days me-1"></i> Ngày SX: <b>${escapeHtml(grp.productDate)}</b> • Ca: <b>${escapeHtml(grp.shift)}</b>
                 </div>
               </div>
               <div style="text-align:right;">
-                <span style="font-size:14px; font-weight:900; color:var(--success); font-family:var(--font-mono);">${grp.totalAccumulatedQty} đôi</span>
-                <div style="font-size:11px; color:#38bdf8; font-family:var(--font-mono);">(+${grp.newQty} đôi mới)</div>
+                <span style="font-size:14px; font-weight:900; color:var(--success); font-family:var(--font-mono);">${grp.totalAccumulatedQty} ${unitStr}</span>
+                <div style="font-size:11px; color:#38bdf8; font-family:var(--font-mono);">(+${grp.newQty} ${unitStr} mới)</div>
               </div>
             </div>
 
             ${grp.hasPastData ? `
               <div style="background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); color:#fbbf24; border-radius:8px; padding:6px 10px; font-size:11.5px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
                 <i class="fa-solid fa-arrows-split-up-and-left"></i>
-                <span>Đã ghi nhận trước đó: <b>${grp.previousQty} đôi</b> &rarr; Tự động gộp cộng dồn thành: <b>${grp.totalAccumulatedQty} đôi</b></span>
+                <span>Đã ghi nhận trước đó: <b>${grp.previousQty} ${unitStr}</b> &rarr; Tự động gộp cộng dồn thành: <b>${grp.totalAccumulatedQty} ${unitStr}</b></span>
               </div>
             ` : ''}
 
             <div style="margin-top:6px; border-top:1px dashed rgba(255,255,255,0.08); padding-top:6px;">
-              <span style="font-size:11px; color:#94a3b8; margin-right:4px;">Chi tiết size:</span>
+              <span style="font-size:11px; color:#94a3b8; margin-right:4px;">Chi tiết ${isCpMode ? "mẻ" : "size"}:</span>
               ${sizeBadges}
             </div>
           </div>
@@ -2010,35 +2258,30 @@
         <div style="background:#090e1a; padding:12px 14px; border-radius:12px; margin-bottom:12px; border:1px solid var(--card-border);">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>
-              <div style="font-size:11.5px; color:var(--text-muted);">Sản lượng quét đợt này</div>
+              <div style="font-size:11.5px; color:var(--text-muted);">${isCpMode ? "Khối lượng quét đợt này" : "Sản lượng quét đợt này"}</div>
               <div style="font-weight:900; color:var(--accent); font-size:18px; font-family:var(--font-mono);">
-                ${totalNewQty} đôi <span style="font-size:12px; color:#94a3b8; font-weight:600;">(${state.stagingScans.length} tem)</span>
+                ${totalNewQty} ${unitStr} <span style="font-size:12px; color:#94a3b8; font-weight:600;">(${state.stagingScans.length} tem)</span>
               </div>
             </div>
             <div style="text-align:right;">
               <div style="font-size:11.5px; color:var(--text-muted);">Tổng lũy kế sau khi gộp</div>
               <div style="font-weight:900; color:var(--success); font-size:18px; font-family:var(--font-mono);">
-                ${totalAccumulatedAll} đôi
+                ${totalAccumulatedAll} ${unitStr}
               </div>
             </div>
           </div>
           <div style="font-size:11.5px; color:var(--text-muted); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08);">
-            Người thực hiện: <b>${escapeHtml((state.currentUser && state.currentUser.username) || "Operator")}</b> | Ca trực: <b>${escapeHtml(state.currentShift)}</b>
+            Phân hệ: <b style="color:${isCpMode ? '#c084fc' : '#38bdf8'};">${isCpMode ? "CP SCAN (Compound)" : "IP SCAN (Phylon)"}</b> | Người thực hiện: <b>${escapeHtml((state.currentUser && state.currentUser.username) || "Operator")}</b> | Ca trực: <b>${escapeHtml(state.currentShift)}</b>
           </div>
         </div>
 
         <div style="font-weight:700; margin-bottom:8px; font-size:12.5px; color:#ffffff; display:flex; align-items:center; justify-content:space-between;">
-          <span>Tổng hợp theo Model Code, Pantone, Ngày và Ca trực:</span>
+          <span>Tổng hợp theo Model Code, Pantone${isCpMode ? ", Ngăn" : ""}, Ngày và Ca trực:</span>
           <span style="font-size:11.5px; color:var(--accent); font-weight:800;">${groups.length} nhóm chỉ tiêu</span>
         </div>
 
         <div style="max-height:280px; overflow-y:auto; padding-right:2px; margin-bottom:12px;">
           ${groupsHtml}
-        </div>
-
-        <div style="font-size:11.5px; color:#94a3b8; background:rgba(14, 165, 233, 0.08); padding:10px 12px; border-radius:10px; border-left:3px solid var(--accent); line-height:1.5;">
-          <i class="fa-solid fa-shield-halved text-accent me-1"></i>
-          Hệ thống sẽ tự động gộp số lượng theo Model Code, Pantone, Size và Ca làm việc; sau đó phân bổ ưu tiên vào bảng <b>IP_PRODUCTION</b> theo <b>Tờ gạch kế hoạch</b> (từng Khách hàng, Fixed ETD sớm nhất) và tự động trừ dần vào <b>số lượng Remain</b> của Production Planning.
         </div>
       `;
 
@@ -2056,17 +2299,22 @@
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đồng bộ dữ liệu vào hệ thống...';
 
       const username = (state.currentUser && state.currentUser.username) || "Operator";
+      const isCpMode = (state.division === "CP");
+      const unitStr = isCpMode ? "kg" : "đôi";
       const groups = aggregateStagingScans();
-      const totalNewQty = groups.reduce((sum, g) => sum + g.newQty, 0);
+      const totalNewQty = Math.round(groups.reduce((sum, g) => sum + g.newQty, 0) * 10) / 10;
 
       const payload = {
         action: "commitScans",
+        division: state.division || "IP",
         sessionToken: state.sessionToken,
         username: username,
         scanEntries: state.stagingScans,
         summaryGroups: groups.map(g => ({
+          division: g.division,
           modelCode: g.modelCode,
           pantoneCode: g.pantoneCode,
+          separator: g.separator,
           planningCode: g.planningCode,
           productDate: g.productDate,
           shift: g.shift,
@@ -2077,7 +2325,7 @@
           barcodes: g.newBarcodes
         })),
         mergeConfig: {
-          mergeBy: ["modelCode", "pantoneCode", "productDate", "shift"],
+          mergeBy: ["modelCode", "pantoneCode", "separator", "productDate", "shift"],
           mergePastData: true
         }
       };
@@ -2096,8 +2344,10 @@
           const ledger = getProductionLedger();
           groups.forEach(g => {
             ledger[g.key] = {
+              division: g.division,
               modelCode: g.modelCode,
               pantoneCode: g.pantoneCode,
+              separator: g.separator,
               planningCode: g.planningCode,
               productDate: g.productDate,
               shift: g.shift,
@@ -2120,7 +2370,7 @@
           closeCommitModal();
 
           playBeep(true);
-          showToast(data.message || `Đã ghi nhận thành công ${savedCount} tem sản lượng (${totalNewQty} đôi) vào hệ thống!`, "success");
+          showToast(data.message || `Đã ghi nhận thành công ${savedCount} tem (${totalNewQty} ${unitStr}) vào hệ thống!`, "success");
         } else {
           alert("Lỗi khi ghi nhận dữ liệu: " + (data.message || "Máy chủ không phản hồi."));
           playBeep(false);

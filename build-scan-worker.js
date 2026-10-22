@@ -1,12 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 
-const distHtmlPath = fs.existsSync(path.join(__dirname, 'frontend', 'dist', 'index.html'))
-  ? path.join(__dirname, 'frontend', 'dist', 'index.html')
-  : path.join(__dirname, 'frontend', 'scanner-app.html');
+const sourceHtmlPath = path.join(__dirname, 'frontend', 'scanner-app.html');
+const distHtmlPath = path.join(__dirname, 'frontend', 'dist', 'index.html');
 const scanWorkerPath = path.join(__dirname, 'cloudflare-worker-scan.js');
 
-const html = fs.readFileSync(distHtmlPath, 'utf8');
+const html = fs.readFileSync(sourceHtmlPath, 'utf8');
+
+// Đồng bộ luôn sang frontend/dist/index.html nếu có thư mục dist
+try {
+  if (fs.existsSync(path.join(__dirname, 'frontend', 'dist'))) {
+    fs.writeFileSync(distHtmlPath, html, 'utf8');
+  }
+} catch (e) {}
 
 const scanWorkerCode = `// ========================================================
 // YUSUNG SCANNER - DEDICATED WORKER
