@@ -161,6 +161,89 @@
       box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
     }
 
+    /* Language Dropdown Selector (Dark Glass Theme) */
+    .lang-selector-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .lang-btn {
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(19, 29, 49, 0.85);
+      backdrop-filter: blur(10px);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .lang-btn:hover {
+      background: rgba(30, 41, 59, 0.95);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .lang-flag {
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .lang-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 2500;
+      min-width: 150px;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65), 0 0 15px rgba(14, 165, 233, 0.15);
+      padding: 6px;
+      display: none;
+      animation: fadeIn 0.18s ease-out;
+    }
+
+    .lang-dropdown-menu.show {
+      display: block;
+    }
+
+    .lang-option {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 0;
+      background: transparent;
+      color: #cbd5e1;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s ease;
+    }
+
+    .lang-option:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: #ffffff;
+    }
+
+    .lang-option.active {
+      background: rgba(14, 165, 233, 0.25);
+      color: var(--accent);
+      font-weight: 800;
+    }
+
     /* Header Division Badge / Switcher */
     .division-badge {
       display: inline-flex;
@@ -1006,11 +1089,28 @@
   ======================================================== -->
   <div id="loginScreen">
     <div class="login-card">
+      <!-- Language Switcher in Login Card Top-Right -->
+      <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+        <div class="lang-selector-wrap" id="loginLangWrap">
+          <button type="button" class="lang-btn" onclick="toggleLangMenu('login')">
+            <span class="lang-flag" id="loginLangFlag">🇻🇳</span>
+            <span id="loginLangCode">VI</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:10px; opacity:0.7;"></i>
+          </button>
+          <div class="lang-dropdown-menu" id="loginLangMenu">
+            <button type="button" class="lang-option" onclick="selectLanguage('vi')"><span class="lang-flag">🇻🇳</span> <span>Tiếng Việt</span></button>
+            <button type="button" class="lang-option" onclick="selectLanguage('en')"><span class="lang-flag">🇺🇸</span> <span>English</span></button>
+            <button type="button" class="lang-option" onclick="selectLanguage('ko')"><span class="lang-flag">🇰🇷</span> <span>한국어</span></button>
+            <button type="button" class="lang-option" onclick="selectLanguage('zh')"><span class="lang-flag">🇨🇳</span> <span>中文</span></button>
+          </div>
+        </div>
+      </div>
+
       <div class="login-brand">
         <div class="brand-icon-box" id="brandIconBox">
           <i class="fa-solid fa-barcode" id="brandIcon"></i>
         </div>
-        <div class="brand-title">YUSUNG SCANNER</div>
+        <div class="brand-title" data-i18n="app_title">YUSUNG SCANNER</div>
         <div class="brand-desc" id="brandDesc">Phân Hệ Quét Tem Sản Xuất Phylon (IP)</div>
       </div>
 
@@ -1018,33 +1118,33 @@
       <div class="division-switch-container">
         <button type="button" class="division-tab active" id="btnLoginDivIP" onclick="setScanDivision('IP')">
           <i class="fa-solid fa-shoe-prints"></i>
-          <span>IP SCAN (Phylon)</span>
+          <span data-i18n="div_ip_btn">IP SCAN (Phylon)</span>
         </button>
         <button type="button" class="division-tab" id="btnLoginDivCP" onclick="setScanDivision('CP')">
           <i class="fa-solid fa-vial-virus"></i>
-          <span>CP SCAN (Compound)</span>
+          <span data-i18n="div_cp_btn">CP SCAN (Compound)</span>
         </button>
       </div>
 
       <div id="loginError" class="error-banner">
         <i class="fa-solid fa-triangle-exclamation"></i>
-        <span id="loginErrorText">Tên đăng nhập hoặc mật khẩu không đúng.</span>
+        <span id="loginErrorText" data-i18n="login_error_default">Tên đăng nhập hoặc mật khẩu không đúng.</span>
       </div>
 
       <form id="loginForm" onsubmit="handleLoginSubmit(event)">
         <div class="form-group">
-          <label class="form-label">Tên Đăng Nhập</label>
+          <label class="form-label" data-i18n="login_user_label">Tên Đăng Nhập</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-user input-icon"></i>
-            <input type="text" id="inputUsername" class="form-input" placeholder="Nhập username..." autocomplete="username" required>
+            <input type="text" id="inputUsername" class="form-input" data-i18n-placeholder="login_user_placeholder" placeholder="Nhập username..." autocomplete="username" required>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Mật Khẩu</label>
+          <label class="form-label" data-i18n="login_pwd_label">Mật Khẩu</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" id="inputPassword" class="form-input" placeholder="Nhập mật khẩu..." autocomplete="current-password" required>
+            <input type="password" id="inputPassword" class="form-input" data-i18n-placeholder="login_pwd_placeholder" placeholder="Nhập mật khẩu..." autocomplete="current-password" required>
             <i class="fa-solid fa-eye toggle-pwd" id="btnTogglePwd" onclick="togglePasswordVisibility()"></i>
           </div>
         </div>
@@ -1052,21 +1152,15 @@
         <div class="remember-row">
           <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
             <input type="checkbox" id="chkRememberMe" checked style="accent-color: var(--primary);">
-            Ghi nhớ đăng nhập
+            <span data-i18n="login_remember">Ghi nhớ đăng nhập</span>
           </label>
           <span style="font-size:12px; color:var(--accent);">Yusung ERP v2.0</span>
         </div>
 
         <button type="submit" id="btnLogin" class="btn-login">
           <i class="fa-solid fa-right-to-bracket"></i>
-          <span>ĐĂNG NHẬP HỆ THỐNG</span>
+          <span data-i18n="login_btn">ĐĂNG NHẬP HỆ THỐNG</span>
         </button>
-
-        <div style="text-align:center; margin-top:16px;">
-          <a href="https://erp.yusung.workers.dev" style="color:#94a3b8; font-size:12.5px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-            <i class="fa-solid fa-arrow-left"></i> Quay lại Web ERP Nhập Liệu
-          </a>
-        </div>
       </form>
     </div>
   </div>
@@ -1082,33 +1176,35 @@
           <i class="fa-solid fa-barcode" id="headerLogoIcon"></i>
         </div>
         <div>
-          <div class="header-app-title">YUSUNG SCANNER</div>
+          <div class="header-app-title" data-i18n="app_title">YUSUNG SCANNER</div>
           <div class="header-app-sub">
             <span class="pulse-dot"></span>
-            Trực Tuyến
+            <span data-i18n="app_subtitle">Trực Tuyến</span>
           </div>
         </div>
       </div>
 
-      <!-- Quick Division Switcher Pill -->
-      <div style="display:flex; align-items:center;">
-        <div class="division-badge" id="headerDivisionBadge" onclick="toggleDivisionQuickly()" title="Bấm để chuyển đổi giữa IP Scan và CP Scan">
-          <i class="fa-solid fa-shoe-prints" id="headerDivIcon"></i>
-          <span id="headerDivText">IP SCAN</span>
-          <i class="fa-solid fa-repeat" style="font-size:10px; opacity:0.7; margin-left:4px;"></i>
-        </div>
-      </div>
-
       <div class="header-user-group">
-        <a href="https://erp.yusung.workers.dev" class="btn-web-erp" title="Mở Web ERP Nhập Liệu">
-          <i class="fa-solid fa-laptop"></i>
-          <span class="tablet-only">Web ERP</span>
-        </a>
+        <!-- Language Switcher in App Header -->
+        <div class="lang-selector-wrap" id="headerLangWrap">
+          <button type="button" class="lang-btn" onclick="toggleLangMenu('header')">
+            <span class="lang-flag" id="headerLangFlag">🇻🇳</span>
+            <span id="headerLangCode">VI</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:10px; opacity:0.7;"></i>
+          </button>
+          <div class="lang-dropdown-menu" id="headerLangMenu">
+            <button type="button" class="lang-option" onclick="selectLanguage('vi')"><span class="lang-flag">🇻🇳</span> <span>Tiếng Việt</span></button>
+            <button type="button" class="lang-option" onclick="selectLanguage('en')"><span class="lang-flag">🇺🇸</span> <span>English</span></button>
+            <button type="button" class="lang-option" onclick="selectLanguage('ko')"><span class="lang-flag">🇰🇷</span> <span>한국어</span></button>
+            <button type="button" class="lang-option" onclick="selectLanguage('zh')"><span class="lang-flag">🇨🇳</span> <span>中文</span></button>
+          </div>
+        </div>
+
         <div class="user-pill" id="userBadge">
           <i class="fa-solid fa-circle-user text-accent"></i>
           <span id="lblUserDisplay">Operator</span>
         </div>
-        <button class="btn-logout" onclick="handleLogout()" title="Đăng xuất">
+        <button class="btn-logout" onclick="handleLogout()" data-i18n-title="logout_title" title="Đăng xuất">
           <i class="fa-solid fa-power-off"></i>
         </button>
       </div>
@@ -1118,10 +1214,10 @@
     <div class="context-bar">
       <div class="shift-toggle-group">
         <button type="button" class="shift-btn active" id="btnShiftA" onclick="setShift('Ca A')">
-          <i class="fa-solid fa-sun me-1"></i> Ca A
+          <span id="lblShiftAText" data-i18n="shift_a">Ca A</span>
         </button>
         <button type="button" class="shift-btn" id="btnShiftB" onclick="setShift('Ca B')">
-          <i class="fa-solid fa-moon me-1"></i> Ca B
+          <span id="lblShiftBText" data-i18n="shift_b">Ca B</span>
         </button>
       </div>
 
@@ -1140,10 +1236,10 @@
           <div class="scanner-card-header">
             <div class="scanner-card-title">
               <i class="fa-solid fa-video"></i>
-              CAMERA QUÉT MÃ (LIVE)
+              <span data-i18n="cam_title">CAMERA QUÉT MÃ (LIVE)</span>
             </div>
             <div style="font-size:11px; color:var(--text-muted);" id="camStatusText">
-              <span class="pulse-dot"></span> Sẵn sàng
+              <span class="pulse-dot"></span> <span data-i18n="cam_ready">Sẵn sàng</span>
             </div>
           </div>
 
@@ -1153,27 +1249,27 @@
 
             <div class="camera-off-placeholder hidden" id="cameraOffNotice">
               <i class="fa-solid fa-camera-slash" style="font-size: 32px; opacity: 0.5;"></i>
-              <div style="font-size: 13px; font-weight: 700; color: #cbd5e1;">Camera đang tắt</div>
+              <div style="font-size: 13px; font-weight: 700; color: #cbd5e1;" data-i18n="cam_off">Camera đang tắt</div>
               <button class="btn-cam btn-cam-primary" onclick="startCameraScanner()">
-                <i class="fa-solid fa-camera"></i> Bật Lại Camera
+                <i class="fa-solid fa-camera"></i> <span data-i18n="cam_turn_on">Bật Lại Camera</span>
               </button>
             </div>
           </div>
 
           <div class="scanner-controls">
             <button class="btn-cam btn-cam-danger" id="btnToggleCam" onclick="toggleCameraScanner()">
-              <i class="fa-solid fa-stop"></i> Tắt
+              <i class="fa-solid fa-stop"></i> <span id="lblToggleCamText" data-i18n="cam_btn_stop">Tắt</span>
             </button>
-            <button class="btn-cam btn-cam-secondary" onclick="switchCameraFacing()" title="Đổi Camera">
-              <i class="fa-solid fa-camera-rotate"></i> Đổi
+            <button class="btn-cam btn-cam-secondary" onclick="switchCameraFacing()" data-i18n-title="cam_btn_switch_title" title="Đổi Camera">
+              <i class="fa-solid fa-camera-rotate"></i> <span data-i18n="cam_btn_switch">Đổi</span>
             </button>
-            <button class="btn-cam btn-cam-secondary btn-cam-torch" id="btnTorch" onclick="toggleTorch()" title="Bật/Tắt Đèn Flash Soi Mã">
-              <i class="fa-solid fa-bolt"></i> Đèn
+            <button class="btn-cam btn-cam-secondary btn-cam-torch" id="btnTorch" onclick="toggleTorch()" data-i18n-title="cam_btn_torch_title" title="Bật/Tắt Đèn Flash Soi Mã">
+              <i class="fa-solid fa-bolt"></i> <span data-i18n="cam_btn_torch">Đèn</span>
             </button>
             <!-- Native photo scan fallback -->
             <input type="file" id="nativePhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="handleNativePhoto(this)">
-            <button class="btn-cam btn-cam-secondary" onclick="document.getElementById('nativePhotoInput').click()" title="Chụp ảnh">
-              <i class="fa-solid fa-camera-retro"></i> Chụp
+            <button class="btn-cam btn-cam-secondary" onclick="document.getElementById('nativePhotoInput').click()" data-i18n-title="cam_btn_photo_title" title="Chụp ảnh">
+              <i class="fa-solid fa-camera-retro"></i> <span data-i18n="cam_btn_photo">Chụp</span>
             </button>
           </div>
         </div>
@@ -1181,8 +1277,8 @@
         <!-- Súng Quét / Nhập Thủ Công -->
         <div class="gun-input-box">
           <i class="fa-solid fa-barcode text-accent" style="position:absolute; left:16px; font-size:16px;"></i>
-          <input type="text" id="inputGunBarcode" class="gun-input" placeholder="Bắn súng quét hoặc gõ mã..." onkeydown="onGunKeyDown(event)">
-          <button class="btn-manual-add" onclick="handleManualAdd()">Thêm</button>
+          <input type="text" id="inputGunBarcode" class="gun-input" data-i18n-placeholder="gun_placeholder" placeholder="Bắn súng quét hoặc gõ mã..." onkeydown="onGunKeyDown(event)">
+          <button class="btn-manual-add" onclick="handleManualAdd()" data-i18n="gun_btn_add">Thêm</button>
         </div>
 
         <!-- 3 KPI Summary Tiles on Tablet (Desktop) -->
@@ -1193,11 +1289,11 @@
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiPlanningsDesk" style="color:var(--accent);">0</div>
-            <div class="kpi-tile-label">Model Code</div>
+            <div class="kpi-tile-label" id="lblKpi2Desk" data-i18n="kpi_model_code">Model Code</div>
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiLastScanDesk" style="color:var(--warning); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
-            <div class="kpi-tile-label">Kiện Vừa Quét</div>
+            <div class="kpi-tile-label" id="lblKpi3Desk" data-i18n="kpi_last_scanned">Kiện Vừa Quét</div>
           </div>
         </div>
       </section>
@@ -1212,11 +1308,11 @@
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiPlanningsMob" style="color:var(--accent);">0</div>
-            <div class="kpi-tile-label">Model Code</div>
+            <div class="kpi-tile-label" id="lblKpi2Mob" data-i18n="kpi_model_code">Model Code</div>
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiLastScanMob" style="color:var(--warning); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
-            <div class="kpi-tile-label">Kiện Vừa Quét</div>
+            <div class="kpi-tile-label" id="lblKpi3Mob" data-i18n="kpi_last_scanned">Kiện Vừa Quét</div>
           </div>
         </div>
 
@@ -1225,13 +1321,13 @@
           <div class="staging-header">
             <div class="staging-title">
               <i class="fa-solid fa-list-check text-accent"></i>
-              Danh Sách Tem Chờ Ghi Nhận
+              <span data-i18n="staging_title">Danh Sách Tem Chờ Ghi Nhận</span>
               <span class="badge-count" id="badgeStagingCount">0 tem</span>
             </div>
 
             <div class="flex items-center gap-2">
-              <button class="btn-clear" onclick="clearStagingList()" title="Xóa danh sách tem đang chờ">
-                <i class="fa-solid fa-trash me-1"></i> Xóa Danh Sách
+              <button class="btn-clear" onclick="clearStagingList()" data-i18n-title="btn_clear_list_title" title="Xóa danh sách tem đang chờ">
+                <i class="fa-solid fa-trash me-1"></i> <span data-i18n="btn_clear_list">Xóa Danh Sách</span>
               </button>
               <button class="btn-commit-action tablet-only" onclick="showCommitModal()">
                 <i class="fa-solid fa-floppy-disk"></i>
@@ -1246,15 +1342,15 @@
               <thead>
                 <tr>
                   <th style="width:36px;">#</th>
-                  <th>Mã Tem (Barcode ID)</th>
-                  <th>Model Code</th>
-                  <th>Pantone</th>
-                  <th id="thSepHeader">Màu Ngăn</th>
+                  <th data-i18n="th_barcode">Mã Tem (Barcode ID)</th>
+                  <th data-i18n="th_model">Model Code</th>
+                  <th data-i18n="th_pantone">Pantone</th>
+                  <th id="thSepHeader" data-i18n="th_separator">Màu Ngăn</th>
                   <th id="thSizeHeader">Size</th>
-                  <th>Ca Làm Việc</th>
+                  <th data-i18n="th_shift">Ca Làm Việc</th>
                   <th id="thQtyHeader">Số Lượng</th>
-                  <th>Thời Gian Quét</th>
-                  <th style="width:40px; text-align:center;">Xóa</th>
+                  <th data-i18n="th_time">Thời Gian Quét</th>
+                  <th style="width:40px; text-align:center;" data-i18n="th_delete">Xóa</th>
                 </tr>
               </thead>
               <tbody id="stagingTableBody">
@@ -1287,7 +1383,7 @@
       </div>
       <button class="btn-mobile-commit" onclick="showCommitModal()">
         <i class="fa-solid fa-cloud-arrow-up"></i>
-        <span>GHI NHẬN SẢN LƯỢNG</span>
+        <span id="lblMobileCommitText" data-i18n="btn_commit_ip">GHI NHẬN SẢN LƯỢNG</span>
       </button>
     </div>
   </div>
@@ -1298,7 +1394,7 @@
       <div class="modal-header">
         <div style="font-weight:800; font-size:14px; color:#ffffff; display:flex; align-items:center; gap:8px;">
           <i class="fa-solid fa-cloud-arrow-up text-accent"></i>
-          Xác Nhận Ghi Nhận Sản Lượng Sản Xuất
+          <span id="lblModalTitle" data-i18n="modal_commit_title_ip">Xác Nhận Ghi Nhận Sản Lượng Sản Xuất</span>
         </div>
         <i class="fa-solid fa-times" style="color:var(--text-muted); cursor:pointer; font-size:16px;" onclick="closeCommitModal()"></i>
       </div>
@@ -1308,9 +1404,9 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn-cam btn-cam-secondary" onclick="closeCommitModal()">Quay Lại</button>
+        <button class="btn-cam btn-cam-secondary" onclick="closeCommitModal()" data-i18n="modal_btn_back">Quay Lại</button>
         <button class="btn-commit-action" id="btnConfirmCommit" onclick="executeCommitScans()">
-          <i class="fa-solid fa-check"></i> Xác Nhận Lưu Dữ Liệu
+          <i class="fa-solid fa-check"></i> <span id="lblConfirmCommitText" data-i18n="modal_btn_confirm">Xác Nhận Lưu Dữ Liệu</span>
         </button>
       </div>
     </div>
@@ -1337,6 +1433,7 @@
       currentUser: null,
       sessionToken: "",
       division: localStorage.getItem("yusung_scanner_division") || "IP",
+      currentLang: localStorage.getItem("ERP_LANGUAGE") || "vi",
       currentShift: "Ca A",
       productDate: new Date().toISOString().split('T')[0],
       stagingScans: [],
@@ -1348,6 +1445,524 @@
       lastScannedText: "",
       lastScannedAt: 0
     };
+
+    // ========================================================
+    // MULTI-LANGUAGE SYSTEM (i18n: vi, en, ko, zh)
+    // ========================================================
+    const I18N_DICT = {
+      vi: {
+        app_title: "YUSUNG SCANNER",
+        app_subtitle: "Trực Tuyến",
+        brand_desc_ip: "Phân Hệ Quét Tem Sản Xuất Phylon (IP)",
+        brand_desc_cp: "Phân Hệ Quét Tem Sản Xuất Compound (CP)",
+        div_ip_btn: "IP SCAN (Phylon)",
+        div_cp_btn: "CP SCAN (Compound)",
+        login_error_default: "Tên đăng nhập hoặc mật khẩu không chính xác.",
+        login_user_label: "Tên Đăng Nhập",
+        login_user_placeholder: "Nhập username...",
+        login_pwd_label: "Mật Khẩu",
+        login_pwd_placeholder: "Nhập mật khẩu...",
+        login_remember: "Ghi nhớ đăng nhập",
+        login_btn: "ĐĂNG NHẬP HỆ THỐNG",
+        login_authenticating: "Đang xác thực...",
+        login_network_error: "Không thể kết nối đến máy chủ hệ thống. Vui lòng kiểm tra lại kết nối mạng!",
+        login_welcome: "Đăng nhập thành công! Chào ",
+        logout_title: "Đăng xuất",
+        logout_confirm: "Bạn có chắc chắn muốn đăng xuất tài khoản?",
+        shift_a: "Ca A",
+        shift_b: "Ca B",
+        shift_selected: "Đã chọn: ",
+        cam_title: "CAMERA QUÉT MÃ (LIVE)",
+        cam_ready: "Sẵn sàng",
+        cam_scanning: "Đang quét 60fps...",
+        cam_off: "Camera đang tắt",
+        cam_turn_on: "Bật Lại Camera",
+        cam_btn_stop: "Tắt",
+        cam_btn_start: "Bật",
+        cam_btn_switch: "Đổi",
+        cam_btn_switch_title: "Đổi Camera",
+        cam_btn_torch: "Đèn",
+        cam_btn_torch_title: "Bật/Tắt Đèn Flash Soi Mã",
+        cam_btn_photo: "Chụp",
+        cam_btn_photo_title: "Chụp ảnh",
+        torch_not_started: "Camera chưa bật để sử dụng đèn Flash",
+        torch_unsupported: "Thiết bị này không hỗ trợ đèn Flash camera",
+        torch_on: "Đã bật đèn Flash",
+        torch_off: "Đã tắt đèn Flash",
+        camera_error: "Không thể mở Camera: ",
+        camera_switched: "Đã đổi sang camera: ",
+        camera_rear: "Sau",
+        camera_front: "Trước",
+        photo_analyzing: "Đang nhận diện tem từ ảnh chụp...",
+        photo_not_found: "Không tìm thấy mã tem trong ảnh chụp. Vui lòng chụp rõ nét hơn!",
+        gun_placeholder_ip: "Bắn súng quét hoặc gõ mã tem IP...",
+        gun_placeholder_cp: "Bắn súng quét hoặc gõ mã mẻ CP (ví dụ: CP261022-L-1234-1)...",
+        gun_btn_add: "Thêm",
+        kpi_staging_ip: "Sản Lượng Chờ Lưu",
+        kpi_staging_cp: "Khối Lượng Chờ Lưu (kg)",
+        kpi_model_code: "Model Code",
+        kpi_last_scanned: "Kiện Vừa Quét",
+        staging_title: "Danh Sách Tem Chờ Ghi Nhận",
+        badge_count_suffix: " tem",
+        btn_clear_list: "Xóa Danh Sách",
+        btn_clear_list_title: "Xóa danh sách tem đang chờ",
+        confirm_clear_list: "Bạn có chắc chắn muốn xóa toàn bộ danh sách tem đang chờ ghi nhận?",
+        cleared_toast: "Đã làm trống danh sách tem chờ",
+        btn_commit_ip: "GHI NHẬN SẢN LƯỢNG",
+        btn_commit_cp: "GHI NHẬN KHỐI LƯỢNG",
+        th_barcode: "Mã Tem (Barcode ID)",
+        th_model: "Model Code",
+        th_pantone: "Pantone",
+        th_separator: "Màu Ngăn",
+        th_size_ip: "Size",
+        th_size_cp: "Size (L/S)",
+        th_shift: "Ca Làm Việc",
+        th_qty_ip: "Số Lượng",
+        th_qty_cp: "Khối Lượng",
+        th_time: "Thời Gian Quét",
+        th_delete: "Xóa",
+        empty_staging_ip: "Chưa có tem nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!",
+        empty_staging_cp: "Chưa có tem mẻ Compound nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!",
+        empty_staging_mob_ip: "Chưa có tem nào trong danh sách. Hướng camera vào mã tem để quét!",
+        empty_staging_mob_cp: "Chưa có tem mẻ Compound nào trong danh sách. Hướng camera vào mã tem để quét!",
+        modal_commit_title_ip: "Xác Nhận Ghi Nhận Sản Lượng Sản Xuất",
+        modal_commit_title_cp: "Xác Nhận Ghi Nhận Khối Lượng Sản Xuất",
+        modal_preparing: "Đang tổng hợp dữ liệu sản lượng...",
+        modal_btn_back: "Quay Lại",
+        modal_btn_confirm: "Xác Nhận Lưu Dữ Liệu",
+        modal_saving: "Đang đồng bộ dữ liệu vào hệ thống...",
+        modal_batch_new_ip: "Sản lượng quét đợt này",
+        modal_batch_new_cp: "Khối lượng quét đợt này",
+        modal_accumulated_total: "Tổng lũy kế sau khi gộp",
+        modal_operator: "Người thực hiện",
+        modal_shift: "Ca trực",
+        modal_group_summary: "Tổng hợp theo Model Code, Pantone, Ngày và Ca trực:",
+        modal_group_count: "nhóm chỉ tiêu",
+        modal_previously_recorded: "Đã ghi nhận trước đó:",
+        modal_auto_merged: "Tự động gộp cộng dồn thành:",
+        modal_batch_detail: "Chi tiết",
+        modal_batch_suffix: "mẻ",
+        modal_size_suffix: "size",
+        unit_pairs: "đôi",
+        unit_kg: "kg",
+        duplicate_staging: "Mã tem [{0}] đã có trong danh sách chờ ghi nhận!",
+        duplicate_history: "Mã tem [{0}] đã được ghi nhận trên hệ thống trước đó!",
+        commit_success: "Đã ghi nhận thành công {0} tem ({1} {2}) vào hệ thống!",
+        empty_commit_alert: "Danh sách tạm đang trống. Hãy quét ít nhất 1 mã tem trước khi ghi nhận!",
+        div_switched_toast: "Đã chuyển sang: ",
+        div_switch_confirm: "Bạn đang có {0} tem chưa ghi nhận. Chuyển phân hệ sẽ xóa danh sách tạm này, bạn có muốn tiếp tục?",
+        delete_item_confirm: "Đã xóa tem: "
+      },
+      en: {
+        app_title: "YUSUNG SCANNER",
+        app_subtitle: "Online",
+        brand_desc_ip: "Phylon Production Barcode Scanner (IP)",
+        brand_desc_cp: "Compound Production Barcode Scanner (CP)",
+        div_ip_btn: "IP SCAN (Phylon)",
+        div_cp_btn: "CP SCAN (Compound)",
+        login_error_default: "Incorrect username or password.",
+        login_user_label: "Username",
+        login_user_placeholder: "Enter username...",
+        login_pwd_label: "Password",
+        login_pwd_placeholder: "Enter password...",
+        login_remember: "Remember login",
+        login_btn: "SIGN IN SYSTEM",
+        login_authenticating: "Authenticating...",
+        login_network_error: "Cannot connect to server. Please check your network connection!",
+        login_welcome: "Sign in successful! Welcome ",
+        logout_title: "Sign out",
+        logout_confirm: "Are you sure you want to sign out?",
+        shift_a: "Shift A",
+        shift_b: "Shift B",
+        shift_selected: "Selected: ",
+        cam_title: "LIVE BARCODE SCANNER",
+        cam_ready: "Ready",
+        cam_scanning: "Scanning 60fps...",
+        cam_off: "Camera is off",
+        cam_turn_on: "Turn Camera On",
+        cam_btn_stop: "Stop",
+        cam_btn_start: "Start",
+        cam_btn_switch: "Flip",
+        cam_btn_switch_title: "Switch Camera",
+        cam_btn_torch: "Torch",
+        cam_btn_torch_title: "Toggle Flashlight",
+        cam_btn_photo: "Snap",
+        cam_btn_photo_title: "Take photo to scan",
+        torch_not_started: "Camera is not active to use flashlight",
+        torch_unsupported: "Device does not support camera torch",
+        torch_on: "Flashlight enabled",
+        torch_off: "Flashlight disabled",
+        camera_error: "Cannot open Camera: ",
+        camera_switched: "Switched to camera: ",
+        camera_rear: "Rear",
+        camera_front: "Front",
+        photo_analyzing: "Detecting barcode from captured photo...",
+        photo_not_found: "No barcode found in photo. Please take a clearer picture!",
+        gun_placeholder_ip: "Scan barcode gun or type IP code...",
+        gun_placeholder_cp: "Scan barcode gun or type CP batch code (e.g. CP261022-L-1234-1)...",
+        gun_btn_add: "Add",
+        kpi_staging_ip: "Pending Output (prs)",
+        kpi_staging_cp: "Pending Weight (kg)",
+        kpi_model_code: "Model Code",
+        kpi_last_scanned: "Last Scanned",
+        staging_title: "Pending Barcodes List",
+        badge_count_suffix: " labels",
+        btn_clear_list: "Clear List",
+        btn_clear_list_title: "Clear all pending labels",
+        confirm_clear_list: "Are you sure you want to clear all pending barcodes?",
+        cleared_toast: "Pending list cleared",
+        btn_commit_ip: "COMMIT PRODUCTION",
+        btn_commit_cp: "COMMIT WEIGHT",
+        th_barcode: "Barcode ID",
+        th_model: "Model Code",
+        th_pantone: "Pantone",
+        th_separator: "Separator",
+        th_size_ip: "Size",
+        th_size_cp: "Size (L/S)",
+        th_shift: "Work Shift",
+        th_qty_ip: "Quantity",
+        th_qty_cp: "Weight",
+        th_time: "Scanned Time",
+        th_delete: "Del",
+        empty_staging_ip: "No labels in staging list. Point camera to barcode or trigger scanner gun!",
+        empty_staging_cp: "No Compound batch labels in list. Point camera to barcode or trigger scanner gun!",
+        empty_staging_mob_ip: "No labels in staging list. Point camera to barcode to scan!",
+        empty_staging_mob_cp: "No Compound batch labels in list. Point camera to barcode to scan!",
+        modal_commit_title_ip: "Confirm Production Output Commit",
+        modal_commit_title_cp: "Confirm Production Weight Commit",
+        modal_preparing: "Aggregating production output data...",
+        modal_btn_back: "Back",
+        modal_btn_confirm: "Confirm & Save",
+        modal_saving: "Syncing data to server...",
+        modal_batch_new_ip: "Current Scan Output",
+        modal_batch_new_cp: "Current Scan Weight",
+        modal_accumulated_total: "Total Accumulated",
+        modal_operator: "Operator",
+        modal_shift: "Shift",
+        modal_group_summary: "Grouped by Model Code, Pantone, Date and Shift:",
+        modal_group_count: "target groups",
+        modal_previously_recorded: "Previously Recorded:",
+        modal_auto_merged: "Auto accumulated to:",
+        modal_batch_detail: "Detail",
+        modal_batch_suffix: "batches",
+        modal_size_suffix: "sizes",
+        unit_pairs: "prs",
+        unit_kg: "kg",
+        duplicate_staging: "Barcode [{0}] already in pending staging list!",
+        duplicate_history: "Barcode [{0}] was already recorded in system previously!",
+        commit_success: "Successfully committed {0} labels ({1} {2}) to system!",
+        empty_commit_alert: "Staging list is empty. Please scan at least 1 barcode before committing!",
+        div_switched_toast: "Switched to: ",
+        div_switch_confirm: "You have {0} uncommitted labels. Switching division will clear them, continue?",
+        delete_item_confirm: "Removed barcode: "
+      },
+      ko: {
+        app_title: "YUSUNG SCANNER",
+        app_subtitle: "온라인",
+        brand_desc_ip: "파이론 생산 라벨 바코드 스캐너 (IP)",
+        brand_desc_cp: "컴파운드 생산 라벨 바코드 스캐너 (CP)",
+        div_ip_btn: "IP SCAN (Phylon)",
+        div_cp_btn: "CP SCAN (Compound)",
+        login_error_default: "사용자 아이디 또는 비밀번호가 올바르지 않습니다.",
+        login_user_label: "사용자 아이디",
+        login_user_placeholder: "아이디 입력...",
+        login_pwd_label: "비밀번호",
+        login_pwd_placeholder: "비밀번호 입력...",
+        login_remember: "로그인 상태 유지",
+        login_btn: "시스템 로그인",
+        login_authenticating: "인증 처리 중...",
+        login_network_error: "서버에 연결할 수 없습니다. 네트워크 상태를 확인해주세요!",
+        login_welcome: "로그인 성공! 환영합니다, ",
+        logout_title: "로그아웃",
+        logout_confirm: "계정에서 로그아웃 하시겠습니까?",
+        shift_a: "A조",
+        shift_b: "B조",
+        shift_selected: "선택됨: ",
+        cam_title: "실시간 바코드 카메라 (LIVE)",
+        cam_ready: "준비 완료",
+        cam_scanning: "60fps 스캔 중...",
+        cam_off: "카메라 꺼짐",
+        cam_turn_on: "카메라 켜기",
+        cam_btn_stop: "정지",
+        cam_btn_start: "시작",
+        cam_btn_switch: "전환",
+        cam_btn_switch_title: "카메라 전환",
+        cam_btn_torch: "플래시",
+        cam_btn_torch_title: "플래시 켜기/끄기",
+        cam_btn_photo: "촬영",
+        cam_btn_photo_title: "사진 촬영 스캔",
+        torch_not_started: "카메라가 켜져 있지 않아 플래시를 사용할 수 없습니다",
+        torch_unsupported: "해당 기기는 카메라 플래시를 지원하지 않습니다",
+        torch_on: "플래시 켜짐",
+        torch_off: "플래시 꺼짐",
+        camera_error: "카메라를 실행할 수 없습니다: ",
+        camera_switched: "카메라 전환됨: ",
+        camera_rear: "후면",
+        camera_front: "전면",
+        photo_analyzing: "촬영된 사진에서 바코드를 인식하는 중...",
+        photo_not_found: "사진에서 바코드를 찾을 수 없습니다. 더 선명하게 촬영해주세요!",
+        gun_placeholder_ip: "바코드 건 스캔 또는 IP 코드 직접 입력...",
+        gun_placeholder_cp: "바코드 건 스캔 또는 CP 배치 코드 입력 (예: CP261022-L-1234-1)...",
+        gun_btn_add: "추가",
+        kpi_staging_ip: "등록 대기 생산량 (족)",
+        kpi_staging_cp: "등록 대기 중량 (kg)",
+        kpi_model_code: "모델 코드",
+        kpi_last_scanned: "최근 스캔 라벨",
+        staging_title: "등록 대기 라벨 목록",
+        badge_count_suffix: " 개",
+        btn_clear_list: "목록 지우기",
+        btn_clear_list_title: "대기 라벨 목록 전체 삭제",
+        confirm_clear_list: "대기 목록의 모든 바코드를 삭제하시겠습니까?",
+        cleared_toast: "대기 라벨 목록이 비워졌습니다",
+        btn_commit_ip: "생산 실적 등록",
+        btn_commit_cp: "중량 실적 등록",
+        th_barcode: "라벨 번호 (Barcode ID)",
+        th_model: "모델 코드",
+        th_pantone: "팬톤 코드",
+        th_separator: "구분자",
+        th_size_ip: "사이즈",
+        th_size_cp: "사이즈 (L/S)",
+        th_shift: "근무조",
+        th_qty_ip: "수량",
+        th_qty_cp: "중량",
+        th_time: "스캔 시간",
+        th_delete: "삭제",
+        empty_staging_ip: "대기 중인 라벨이 없습니다. 카메라를 비추거나 바코드 건으로 스캔하세요!",
+        empty_staging_cp: "대기 중인 컴파운드 라벨이 없습니다. 카메라를 비추거나 바코드 건으로 스캔하세요!",
+        empty_staging_mob_ip: "대기 중인 라벨이 없습니다. 카메라로 스캔하세요!",
+        empty_staging_mob_cp: "대기 중인 컴파운드 라벨이 없습니다. 카메라로 스캔하세요!",
+        modal_commit_title_ip: "생산 실적 등록 확인",
+        modal_commit_title_cp: "중량 실적 등록 확인",
+        modal_preparing: "생산 데이터 집계 중...",
+        modal_btn_back: "돌아가기",
+        modal_btn_confirm: "데이터 저장 확인",
+        modal_saving: "시스템으로 데이터 동기화 중...",
+        modal_batch_new_ip: "이번 스캔 생산량",
+        modal_batch_new_cp: "이번 스캔 중량",
+        modal_accumulated_total: "병합 후 총 누적량",
+        modal_operator: "작업자",
+        modal_shift: "근무조",
+        modal_group_summary: "모델 코드, 팬톤, 일자, 근무조별 집계:",
+        modal_group_count: "개 그룹",
+        modal_previously_recorded: "이전 등록 실적:",
+        modal_auto_merged: "자동 합산 누계:",
+        modal_batch_detail: "상세 내역",
+        modal_batch_suffix: "배치",
+        modal_size_suffix: "사이즈",
+        unit_pairs: "족",
+        unit_kg: "kg",
+        duplicate_staging: "바코드 [{0}]는 이미 대기 목록에 있습니다!",
+        duplicate_history: "바코드 [{0}]는 이미 이전에 시스템에 등록되었습니다!",
+        commit_success: "{0}개 라벨 ({1} {2})이 시스템에 성공적으로 등록되었습니다!",
+        empty_commit_alert: "대기 목록이 비어 있습니다. 최소 1개 이상의 바코드를 스캔하세요!",
+        div_switched_toast: "전환 완료: ",
+        div_switch_confirm: "{0}개의 미등록 라벨이 있습니다. 전환 시 삭제됩니다. 계속하시겠습니까?",
+        delete_item_confirm: "라벨 삭제됨: "
+      },
+      zh: {
+        app_title: "YUSUNG SCANNER",
+        app_subtitle: "在线",
+        brand_desc_ip: "Phylon 生产标签条码扫描系统 (IP)",
+        brand_desc_cp: "Compound 生产标签条码扫描系统 (CP)",
+        div_ip_btn: "IP SCAN (Phylon)",
+        div_cp_btn: "CP SCAN (Compound)",
+        login_error_default: "用户名或密码不正确。",
+        login_user_label: "用户名",
+        login_user_placeholder: "请输入用户名...",
+        login_pwd_label: "密码",
+        login_pwd_placeholder: "请输入密码...",
+        login_remember: "记住登录",
+        login_btn: "登录系统",
+        login_authenticating: "正在验证...",
+        login_network_error: "无法连接到系统服务器，请检查网络连接！",
+        login_welcome: "登录成功！欢迎 ",
+        logout_title: "退出登录",
+        logout_confirm: "您确定要退出当前账号吗？",
+        shift_a: "A班",
+        shift_b: "B班",
+        shift_selected: "已选择: ",
+        cam_title: "实时条码扫描相机 (LIVE)",
+        cam_ready: "就绪",
+        cam_scanning: "正在以60fps扫描...",
+        cam_off: "摄像头已关闭",
+        cam_turn_on: "重新开启摄像头",
+        cam_btn_stop: "停止",
+        cam_btn_start: "开启",
+        cam_btn_switch: "切换",
+        cam_btn_switch_title: "切换摄像头",
+        cam_btn_torch: "补光灯",
+        cam_btn_torch_title: "开启/关闭补光灯",
+        cam_btn_photo: "拍照",
+        cam_btn_photo_title: "拍照扫码",
+        torch_not_started: "摄像头未开启，无法使用补光灯",
+        torch_unsupported: "此设备不支持相机补光灯",
+        torch_on: "已开启补光灯",
+        torch_off: "已关闭补光灯",
+        camera_error: "无法打开摄像头: ",
+        camera_switched: "已切换到摄像头: ",
+        camera_rear: "后置",
+        camera_front: "前置",
+        photo_analyzing: "正在从拍摄的照片中识别条码...",
+        photo_not_found: "未在照片中检测到条码，请更清晰拍摄！",
+        gun_placeholder_ip: "使用扫描枪扫码或手动输入IP条码...",
+        gun_placeholder_cp: "使用扫描枪扫码或输入CP胶料条码 (如 CP261022-L-1234-1)...",
+        gun_btn_add: "添加",
+        kpi_staging_ip: "待记录产量 (双)",
+        kpi_staging_cp: "待记录重量 (kg)",
+        kpi_model_code: "鞋型代号",
+        kpi_last_scanned: "刚扫描件",
+        staging_title: "待记录条码列表",
+        badge_count_suffix: " 张",
+        btn_clear_list: "清空列表",
+        btn_clear_list_title: "清空所有待记录标签",
+        confirm_clear_list: "您确定要清空待记录条码列表吗？",
+        cleared_toast: "已清空待记录标签列表",
+        btn_commit_ip: "记录生产量",
+        btn_commit_cp: "记录生产重量",
+        th_barcode: "条码编号 (Barcode ID)",
+        th_model: "鞋型代号",
+        th_pantone: "色号",
+        th_separator: "隔色",
+        th_size_ip: "尺码",
+        th_size_cp: "尺码 (L/S)",
+        th_shift: "班次",
+        th_qty_ip: "数量",
+        th_qty_cp: "重量",
+        th_time: "扫描时间",
+        th_delete: "删除",
+        empty_staging_ip: "暂无待记录条码。请将摄像头对准条码或扣动扫描枪！",
+        empty_staging_cp: "暂无待记录胶料条码。请将摄像头对准条码或扣动扫描枪！",
+        empty_staging_mob_ip: "暂无待记录条码。请将摄像头对准条码进行扫描！",
+        empty_staging_mob_cp: "暂无待记录胶料条码。请将摄像头对准条码进行扫描！",
+        modal_commit_title_ip: "确认记录生产数量",
+        modal_commit_title_cp: "确认记录生产重量",
+        modal_preparing: "正在汇总生产数据...",
+        modal_btn_back: "返回",
+        modal_btn_confirm: "确认保存数据",
+        modal_saving: "正在同步数据到系统...",
+        modal_batch_new_ip: "本次扫描产量",
+        modal_batch_new_cp: "本次扫描重量",
+        modal_accumulated_total: "合并后累计总量",
+        modal_operator: "操作人员",
+        modal_shift: "班次",
+        modal_group_summary: "按鞋型代号、色号、日期与班次汇总：",
+        modal_group_count: "个指标组",
+        modal_previously_recorded: "此前已记录：",
+        modal_auto_merged: "自动累加汇总为：",
+        modal_batch_detail: "明细",
+        modal_batch_suffix: "锅/批次",
+        modal_size_suffix: "尺码",
+        unit_pairs: "双",
+        unit_kg: "kg",
+        duplicate_staging: "条码 [{0}] 已在待记录列表中！",
+        duplicate_history: "条码 [{0}] 此前已录入系统！",
+        commit_success: "成功向系统录入 {0} 张标签 ({1} {2})！",
+        empty_commit_alert: "待记录列表为空。请在记录前至少扫描1张条码！",
+        div_switched_toast: "已切换为: ",
+        div_switch_confirm: "您有 {0} 张未记录标签，切换分部将清空列表，是否继续？",
+        delete_item_confirm: "已删除条码: "
+      }
+    };
+
+    const LANG_METADATA = {
+      vi: { flag: "🇻🇳", code: "VI", name: "Tiếng Việt" },
+      en: { flag: "🇺🇸", code: "EN", name: "English" },
+      ko: { flag: "🇰🇷", code: "KO", name: "한국어" },
+      zh: { flag: "🇨🇳", code: "ZH", name: "中文" }
+    };
+
+    function t(key, fallback = "") {
+      const lang = state.currentLang || "vi";
+      const dict = I18N_DICT[lang] || I18N_DICT.vi;
+      if (dict && dict[key] !== undefined) {
+        return dict[key];
+      }
+      const fallbackDict = I18N_DICT.vi;
+      if (fallbackDict && fallbackDict[key] !== undefined) {
+        return fallbackDict[key];
+      }
+      return fallback || key;
+    }
+
+    function toggleLangMenu(type) {
+      const menuId = (type === 'login') ? 'loginLangMenu' : 'headerLangMenu';
+      const menu = document.getElementById(menuId);
+      if (!menu) return;
+      const isShow = menu.classList.contains('show');
+      closeAllLangMenus();
+      if (!isShow) {
+        menu.classList.add('show');
+      }
+    }
+
+    function closeAllLangMenus() {
+      const m1 = document.getElementById('loginLangMenu');
+      const m2 = document.getElementById('headerLangMenu');
+      if (m1) m1.classList.remove('show');
+      if (m2) m2.classList.remove('show');
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.lang-selector-wrap')) {
+        closeAllLangMenus();
+      }
+    });
+
+    function selectLanguage(lang) {
+      if (!I18N_DICT[lang]) return;
+      state.currentLang = lang;
+      localStorage.setItem("ERP_LANGUAGE", lang);
+      closeAllLangMenus();
+      updateLanguageUI();
+    }
+
+    function updateLanguageUI() {
+      const lang = state.currentLang || "vi";
+      const meta = LANG_METADATA[lang] || LANG_METADATA.vi;
+
+      // Update Header & Login selector labels
+      const lFlag1 = document.getElementById("loginLangFlag");
+      const lCode1 = document.getElementById("loginLangCode");
+      const lFlag2 = document.getElementById("headerLangFlag");
+      const lCode2 = document.getElementById("headerLangCode");
+      if (lFlag1) lFlag1.innerText = meta.flag;
+      if (lCode1) lCode1.innerText = meta.code;
+      if (lFlag2) lFlag2.innerText = meta.flag;
+      if (lCode2) lCode2.innerText = meta.code;
+
+      // Update active option in dropdowns
+      document.querySelectorAll(".lang-option").forEach(btn => {
+        const onclickAttr = btn.getAttribute("onclick") || "";
+        btn.classList.toggle("active", onclickAttr.includes("'" + lang + "'"));
+      });
+
+      // Update static text elements with [data-i18n]
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        const val = t(key);
+        if (val) el.innerText = val;
+      });
+
+      // Update input placeholders with [data-i18n-placeholder]
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        const val = t(key);
+        if (val) el.placeholder = val;
+      });
+
+      // Update element titles with [data-i18n-title]
+      document.querySelectorAll("[data-i18n-title]").forEach(el => {
+        const key = el.getAttribute("data-i18n-title");
+        const val = t(key);
+        if (val) el.title = val;
+      });
+
+      // Update dynamic division-specific elements
+      applyDivisionUI();
+
+      // Refresh table/card lists and KPI headers
+      updateUI();
+    }
 
     // ========================================================
     // AUDIO FEEDBACK (Web Audio API) & HAPTICS
@@ -1400,7 +2015,8 @@
     function setScanDivision(div) {
       if (state.division === div) return;
       if (state.stagingScans.length > 0) {
-        if (!confirm("Bạn đang có " + state.stagingScans.length + " tem chưa ghi nhận. Chuyển phân hệ sẽ xóa danh sách tạm này, bạn có muốn tiếp tục?")) {
+        const warnMsg = t("div_switch_confirm").replace("{0}", state.stagingScans.length);
+        if (!confirm(warnMsg)) {
           return;
         }
         state.stagingScans = [];
@@ -1410,7 +2026,7 @@
       applyDivisionUI();
       loadScannedHistory();
       updateUI();
-      showToast("Đã chuyển sang: " + (div === "CP" ? "CP SCAN (Compound)" : "IP SCAN (Phylon)"), "info");
+      showToast(t("div_switched_toast") + (div === "CP" ? "CP SCAN (Compound)" : "IP SCAN (Phylon)"), "info");
     }
 
     function toggleDivisionQuickly() {
@@ -1433,47 +2049,40 @@
       // 2. Mô tả thương hiệu trên trang đăng nhập
       const brandDesc = document.getElementById("brandDesc");
       if (brandDesc) {
-        brandDesc.innerText = isCp ? "Phân Hệ Quét Tem Sản Xuất Compound (CP)" : "Phân Hệ Quét Tem Sản Xuất Phylon (IP)";
+        brandDesc.innerText = isCp ? t("brand_desc_cp") : t("brand_desc_ip");
       }
 
-      // 3. Huy hiệu trên thanh Header
-      const headerDiv = document.getElementById("headerDivisionBadge");
-      const headerIcon = document.getElementById("headerDivIcon");
-      const headerText = document.getElementById("headerDivText");
-      if (headerDiv && headerText && headerIcon) {
-        if (isCp) {
-          headerDiv.classList.add("cp-mode");
-          headerIcon.className = "fa-solid fa-vial-virus";
-          headerText.innerText = "CP SCAN";
-        } else {
-          headerDiv.classList.remove("cp-mode");
-          headerIcon.className = "fa-solid fa-shoe-prints";
-          headerText.innerText = "IP SCAN";
-        }
-      }
-
-      // 4. Nhãn KPI
+      // 3. Nhãn KPI
       const lblKpi1Desk = document.getElementById("lblKpi1Desk");
       const lblKpi1Mob = document.getElementById("lblKpi1Mob");
-      if (lblKpi1Desk) lblKpi1Desk.innerText = isCp ? "Khối Lượng Chờ Lưu (kg)" : "Sản Lượng Chờ Lưu (đôi)";
-      if (lblKpi1Mob) lblKpi1Mob.innerText = isCp ? "Khối Lượng Chờ Lưu (kg)" : "Sản Lượng Chờ Lưu (đôi)";
+      if (lblKpi1Desk) lblKpi1Desk.innerText = isCp ? t("kpi_staging_cp") : t("kpi_staging_ip");
+      if (lblKpi1Mob) lblKpi1Mob.innerText = isCp ? t("kpi_staging_cp") : t("kpi_staging_ip");
 
-      // 5. Placeholder súng quét
+      // 4. Placeholder súng quét
       const gunInput = document.getElementById("inputGunBarcode");
       if (gunInput) {
-        gunInput.placeholder = isCp ? "Bắn súng quét hoặc gõ mã mẻ CP (ví dụ: CP261022-L-1234-1)..." : "Bắn súng quét hoặc gõ mã tem IP...";
+        gunInput.placeholder = isCp ? t("gun_placeholder_cp") : t("gun_placeholder_ip");
       }
 
-      // 6. Tiêu đề cột bảng
+      // 5. Tiêu đề cột bảng
       const thSize = document.getElementById("thSizeHeader");
       const thQty = document.getElementById("thQtyHeader");
+      const thSep = document.getElementById("thSepHeader");
+      if (thSize) thSize.innerText = isCp ? t("th_size_cp") : t("th_size_ip");
+      if (thQty) thQty.innerText = isCp ? t("th_qty_cp") : t("th_qty_ip");
+      if (thSep) thSep.innerText = t("th_separator");
+
+      // 6. Modal Title
+      const lblModalTitle = document.getElementById("lblModalTitle");
+      if (lblModalTitle) {
+        lblModalTitle.innerText = isCp ? t("modal_commit_title_cp") : t("modal_commit_title_ip");
+      }
+
       const emptyStateCell = document.getElementById("emptyStateTableCell");
-      if (thSize) thSize.innerText = isCp ? "Size (L/S)" : "Size";
-      if (thQty) thQty.innerText = isCp ? "Khối Lượng" : "Số Lượng";
       if (emptyStateCell) {
         emptyStateCell.innerHTML = `
           <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
-          ${isCp ? "Chưa có tem mẻ Compound nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!" : "Chưa có tem nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!"}
+          ${isCp ? t("empty_staging_cp") : t("empty_staging_ip")}
         `;
       }
     }
@@ -1482,6 +2091,7 @@
     // AUTHENTICATION & LOGIN LOGIC
     // ========================================================
     function initAuth() {
+      updateLanguageUI();
       applyDivisionUI();
       const savedUserStr = localStorage.getItem("yusung_scanner_user");
       const savedToken = localStorage.getItem("yusung_scanner_token");
@@ -1523,7 +2133,7 @@
       if (!username || !password) return;
 
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác thực...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + t("login_authenticating");
       errBox.style.display = "none";
 
       try {
@@ -1544,26 +2154,26 @@
             localStorage.setItem("yusung_scanner_token", state.sessionToken);
           }
 
-          showToast("Đăng nhập thành công! Chào " + (state.currentUser.fullName || username), "success");
+          showToast(t("login_welcome") + (state.currentUser.fullName || username), "success");
           switchToAppScreen();
         } else {
-          errText.innerText = data.message || "Tên đăng nhập hoặc mật khẩu không chính xác.";
+          errText.innerText = data.message || t("login_error_default");
           errBox.style.display = "flex";
           playBeep(false);
         }
       } catch (err) {
         console.error("Login API error:", err);
-        errText.innerText = "Không thể kết nối đến máy chủ hệ thống. Vui lòng kiểm tra lại kết nối mạng!";
+        errText.innerText = t("login_network_error");
         errBox.style.display = "flex";
         playBeep(false);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> <span>ĐĂNG NHẬP HỆ THỐNG</span>';
+        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> <span>' + t("login_btn") + '</span>';
       }
     }
 
     function handleLogout() {
-      if (confirm("Bạn có chắc chắn muốn đăng xuất tài khoản?")) {
+      if (confirm(t("logout_confirm"))) {
         stopCameraScanner();
         localStorage.removeItem("yusung_scanner_user");
         localStorage.removeItem("yusung_scanner_token");
@@ -1576,7 +2186,7 @@
     function switchToLoginScreen() {
       document.getElementById("loginScreen").classList.remove("hidden");
       document.getElementById("appScreen").classList.add("hidden");
-      applyDivisionUI();
+      updateLanguageUI();
     }
 
     function switchToAppScreen() {
@@ -1587,7 +2197,7 @@
       document.getElementById("lblUserDisplay").innerText = (user.fullName || user.username || "Operator");
 
       document.getElementById("inputProductDate").value = state.productDate;
-      applyDivisionUI();
+      updateLanguageUI();
       loadScannedHistory();
 
       setTimeout(() => { startCameraScanner(); }, 350);
@@ -1604,7 +2214,8 @@
       state.currentShift = shiftName;
       document.getElementById("btnShiftA").classList.toggle("active", shiftName === "Ca A");
       document.getElementById("btnShiftB").classList.toggle("active", shiftName === "Ca B");
-      showToast("Đã chọn: " + shiftName, "info");
+      const shiftDisplay = (shiftName === "Ca A") ? t("shift_a") : t("shift_b");
+      showToast(t("shift_selected") + shiftDisplay, "info");
     }
 
     function onDateChange() {
@@ -1647,11 +2258,11 @@
 
       offNotice.classList.add("hidden");
       laser.style.display = "block";
-      statusText.innerHTML = '<span class="pulse-dot"></span> Đang quét 60fps...';
+      statusText.innerHTML = '<span class="pulse-dot"></span> ' + t("cam_scanning");
 
       state.isScanningActive = true;
       btn.className = "btn-cam btn-cam-danger";
-      btn.innerHTML = '<i class="fa-solid fa-stop"></i> Tắt';
+      btn.innerHTML = '<i class="fa-solid fa-stop"></i> <span id="lblToggleCamText">' + t("cam_btn_stop") + '</span>';
 
       cleanUpHardwareTracks();
 
@@ -1695,7 +2306,7 @@
               function(decodedText) { handleBarcodeDetected(decodedText); },
               function(e) {}
             ).catch(function(finalErr) {
-              alert("Không thể mở Camera: " + (finalErr.message || finalErr));
+              alert(t("camera_error") + (finalErr.message || finalErr));
               stopCameraScanner();
             });
           });
@@ -1714,18 +2325,19 @@
 
       state.isScanningActive = false;
       btn.className = "btn-cam btn-cam-primary";
-      btn.innerHTML = '<i class="fa-solid fa-camera"></i> Bật';
+      btn.innerHTML = '<i class="fa-solid fa-camera"></i> <span id="lblToggleCamText">' + t("cam_btn_start") + '</span>';
 
       laser.style.display = "none";
       offNotice.classList.remove("hidden");
-      statusText.innerHTML = '<span style="color:var(--text-muted);">● Camera đã tắt</span>';
+      statusText.innerHTML = '<span style="color:var(--text-muted);">● ' + t("cam_off") + '</span>';
 
       cleanUpHardwareTracks();
     }
 
     function switchCameraFacing() {
       state.currentCameraFacing = (state.currentCameraFacing === "environment") ? "user" : "environment";
-      showToast("Đã đổi sang camera: " + (state.currentCameraFacing === "environment" ? "Sau" : "Trước"), "info");
+      const camName = (state.currentCameraFacing === "environment") ? t("camera_rear") : t("camera_front");
+      showToast(t("camera_switched") + camName, "info");
       if (state.isScanningActive) {
         startCameraScanner();
       }
@@ -1735,20 +2347,20 @@
       try {
         const video = document.querySelector("#qrReader video");
         if (!video || !video.srcObject) {
-          showToast("Camera chưa bật để sử dụng đèn Flash", "info");
+          showToast(t("torch_not_started"), "info");
           return;
         }
         const track = video.srcObject.getVideoTracks()[0];
         if (!track) return;
         const capabilities = track.getCapabilities ? track.getCapabilities() : {};
         if (!capabilities.torch) {
-          showToast("Thiết bị này không hỗ trợ đèn Flash camera", "info");
+          showToast(t("torch_unsupported"), "info");
           return;
         }
         state.torchOn = !state.torchOn;
         await track.applyConstraints({ advanced: [{ torch: state.torchOn }] });
         document.getElementById("btnTorch").classList.toggle("active", state.torchOn);
-        showToast(state.torchOn ? "Đã bật đèn Flash" : "Đã tắt đèn Flash", "info");
+        showToast(state.torchOn ? t("torch_on") : t("torch_off"), "info");
       } catch (e) {
         console.warn("Torch error:", e);
       }
@@ -1781,7 +2393,7 @@
     function handleNativePhoto(input) {
       if (!input.files || input.files.length === 0) return;
       const file = input.files[0];
-      showToast("Đang nhận diện tem từ ảnh chụp...", "info");
+      showToast(t("photo_analyzing"), "info");
 
       try {
         const helper = new Html5Qrcode("hiddenScanFileHelper");
@@ -1792,7 +2404,7 @@
             try { helper.clear(); } catch(e) {}
           })
           .catch(err => {
-            showToast("Không tìm thấy mã tem trong ảnh chụp. Vui lòng chụp rõ nét hơn!", "error");
+            showToast(t("photo_not_found"), "error");
             playBeep(false);
             input.value = "";
             try { helper.clear(); } catch(e) {}
@@ -1897,14 +2509,14 @@
       const duplicateInStaging = state.stagingScans.some(item => item.barcodeId === barcodeId);
       if (duplicateInStaging) {
         playBeep(false);
-        showToast("Mã tem [" + barcodeId + "] đã có trong danh sách chờ ghi nhận!", "warning");
+        showToast(t("duplicate_staging").replace("{0}", barcodeId), "warning");
         return;
       }
 
       // 2. Kiểm tra trùng lặp trong Lịch sử Hệ Thống
       if (state.scannedHistorySet.has(barcodeId)) {
         playBeep(false);
-        showToast("Mã tem [" + barcodeId + "] đã được ghi nhận trên hệ thống trước đó!", "error");
+        showToast(t("duplicate_history").replace("{0}", barcodeId), "error");
         return;
       }
 
@@ -1929,8 +2541,8 @@
       });
 
       updateUI();
-      const unitText = isCpMode ? " kg" : " đôi";
-      showToast("Đã quét: " + (modelCode || barcodeId) + (pantoneCode ? " (" + pantoneCode + ")" : "") + " - " + size + " (" + qty + unitText + ")", "success");
+      const unitText = isCpMode ? (" " + t("unit_kg")) : (" " + t("unit_pairs"));
+      showToast((modelCode || barcodeId) + (pantoneCode ? " (" + pantoneCode + ")" : "") + " - " + size + " (" + qty + unitText + ")", "success");
 
       const gunInput = document.getElementById("inputGunBarcode");
       if (gunInput) {
@@ -1970,11 +2582,12 @@
       const lastScanMob = document.getElementById("kpiLastScanMob");
 
       const lblCommitDesk = document.getElementById("lblCommitDesk");
+      const lblMobileCommit = document.getElementById("lblMobileCommitText");
       const lblBottomPairs = document.getElementById("lblBottomPairs");
       const lblBottomPlannings = document.getElementById("lblBottomPlannings");
 
       const isCpMode = (state.division === "CP");
-      const unitStr = isCpMode ? " kg" : " đôi";
+      const unitStr = isCpMode ? (" " + t("unit_kg")) : (" " + t("unit_pairs"));
 
       let totalQty = 0;
       const modelSet = new Set();
@@ -1988,44 +2601,49 @@
       totalQty = Math.round(totalQty * 10) / 10;
 
       // Update KPIs
-      totalPairsDesk.innerText = totalQty + (isCpMode ? " kg" : "");
-      totalPairsMob.innerText = totalQty + (isCpMode ? " kg" : "");
-      planningsDesk.innerText = modelSet.size;
-      planningsMob.innerText = modelSet.size;
-      badgeCount.innerText = state.stagingScans.length + " tem";
+      if (totalPairsDesk) totalPairsDesk.innerText = totalQty + (isCpMode ? (" " + t("unit_kg")) : "");
+      if (totalPairsMob) totalPairsMob.innerText = totalQty + (isCpMode ? (" " + t("unit_kg")) : "");
+      if (planningsDesk) planningsDesk.innerText = modelSet.size;
+      if (planningsMob) planningsMob.innerText = modelSet.size;
+      if (badgeCount) badgeCount.innerText = state.stagingScans.length + t("badge_count_suffix");
 
       if (state.stagingScans.length > 0) {
         const latest = state.stagingScans[0];
-        const latestTxt = (latest.modelCode || latest.barcodeId) + " (" + latest.size + " - " + latest.qty + (isCpMode ? "kg" : "đ") + ")";
-        lastScanDesk.innerText = latestTxt;
-        lastScanMob.innerText = latestTxt;
+        const latestTxt = (latest.modelCode || latest.barcodeId) + " (" + latest.size + " - " + latest.qty + (isCpMode ? t("unit_kg") : t("unit_pairs")) + ")";
+        if (lastScanDesk) lastScanDesk.innerText = latestTxt;
+        if (lastScanMob) lastScanMob.innerText = latestTxt;
       } else {
-        lastScanDesk.innerText = "-";
-        lastScanMob.innerText = "-";
+        if (lastScanDesk) lastScanDesk.innerText = "-";
+        if (lastScanMob) lastScanMob.innerText = "-";
       }
 
       // Update Action Button Labels
-      const actionTitle = isCpMode ? "GHI NHẬN KHỐI LƯỢNG" : "GHI NHẬN SẢN LƯỢNG";
-      lblCommitDesk.innerText = actionTitle + " (" + totalQty + unitStr.toUpperCase() + ")";
-      lblBottomPairs.innerText = totalQty + unitStr;
-      lblBottomPlannings.innerText = modelSet.size + " Model Code";
+      const actionTitle = isCpMode ? t("btn_commit_cp") : t("btn_commit_ip");
+      if (lblCommitDesk) lblCommitDesk.innerText = actionTitle + " (" + totalQty + unitStr.toUpperCase() + ")";
+      if (lblMobileCommit) lblMobileCommit.innerText = actionTitle;
+      if (lblBottomPairs) lblBottomPairs.innerText = totalQty + unitStr;
+      if (lblBottomPlannings) lblBottomPlannings.innerText = modelSet.size + " Model Code";
 
       // Render Empty State
       if (state.stagingScans.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="10" class="empty-state">
+        if (tbody) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="10" class="empty-state">
+                <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
+                ${isCpMode ? t("empty_staging_cp") : t("empty_staging_ip")}
+              </td>
+            </tr>
+          `;
+        }
+        if (mobileList) {
+          mobileList.innerHTML = `
+            <div class="empty-state">
               <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
-              ${isCpMode ? "Chưa có tem mẻ Compound nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!" : "Chưa có tem nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!"}
-            </td>
-          </tr>
-        `;
-        mobileList.innerHTML = `
-          <div class="empty-state">
-            <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
-            ${isCpMode ? "Chưa có tem mẻ Compound nào trong danh sách. Hướng camera vào mã tem để quét!" : "Chưa có tem nào trong danh sách. Hướng camera vào mã tem để quét!"}
-          </div>
-        `;
+              ${isCpMode ? t("empty_staging_mob_cp") : t("empty_staging_mob_ip")}
+            </div>
+          `;
+        }
         return;
       }
 
@@ -2044,14 +2662,14 @@
             <td><span class="tag-qty">${item.qty}${unitStr}</span></td>
             <td style="color:var(--text-muted); font-size:11.5px; font-family:var(--font-mono);">${escapeHtml(item.scanTime)}</td>
             <td style="text-align:center;">
-              <button class="btn-delete-item" onclick="removeStagingItem(${index})" title="Xóa tem này">
+              <button class="btn-delete-item" onclick="removeStagingItem(${index})" title="${t("th_delete")}">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             </td>
           </tr>
         `;
       });
-      tbody.innerHTML = tableHtml;
+      if (tbody) tbody.innerHTML = tableHtml;
 
       // 2. Render Mobile Cards
       let cardsHtml = "";
@@ -2071,29 +2689,29 @@
                 <span class="tag-meta"><i class="fa-solid fa-calendar-day me-1"></i>${escapeHtml(item.productDate)} (${escapeHtml(item.shift)})</span>
               </div>
             </div>
-            <button class="btn-delete-item" onclick="removeStagingItem(${index})" title="Xóa tem này">
+            <button class="btn-delete-item" onclick="removeStagingItem(${index})" title="${t("th_delete")}">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
         `;
       });
-      mobileList.innerHTML = cardsHtml;
+      if (mobileList) mobileList.innerHTML = cardsHtml;
     }
 
     function removeStagingItem(index) {
       if (index >= 0 && index < state.stagingScans.length) {
         const removed = state.stagingScans.splice(index, 1)[0];
         updateUI();
-        showToast("Đã xóa tem: " + removed.barcodeId, "info");
+        showToast(t("delete_item_confirm") + removed.barcodeId, "info");
       }
     }
 
     function clearStagingList() {
       if (state.stagingScans.length === 0) return;
-      if (confirm("Bạn có chắc chắn muốn xóa toàn bộ danh sách tem đang chờ ghi nhận?")) {
+      if (confirm(t("confirm_clear_list"))) {
         state.stagingScans = [];
         updateUI();
-        showToast("Đã làm trống danh sách tem chờ", "info");
+        showToast(t("cleared_toast"), "info");
       }
     }
 
@@ -2191,12 +2809,12 @@
     // ========================================================
     function showCommitModal() {
       if (state.stagingScans.length === 0) {
-        alert("Danh sách tạm đang trống. Hãy quét ít nhất 1 mã tem trước khi ghi nhận!");
+        alert(t("empty_commit_alert"));
         return;
       }
 
       const isCpMode = (state.division === "CP");
-      const unitStr = isCpMode ? "kg" : "đôi";
+      const unitStr = isCpMode ? t("unit_kg") : t("unit_pairs");
       const groups = aggregateStagingScans();
       let totalNewQty = 0;
       let totalAccumulatedAll = 0;
@@ -2230,7 +2848,7 @@
                   ${grp.separator ? `<span style="background:rgba(168,85,247,0.15); color:#c084fc; font-size:11.5px; padding:2px 7px; border-radius:4px; margin-left:4px; font-family:var(--font-mono);">${escapeHtml(grp.separator)}</span>` : ''}
                 </div>
                 <div style="font-size:11.5px; color:#94a3b8; margin-top:2px;">
-                  <i class="fa-regular fa-calendar-days me-1"></i> Ngày SX: <b>${escapeHtml(grp.productDate)}</b> • Ca: <b>${escapeHtml(grp.shift)}</b>
+                  <i class="fa-regular fa-calendar-days me-1"></i> ${t("col_order_date", "Ngày")}: <b>${escapeHtml(grp.productDate)}</b> • ${t("modal_shift", "Ca")}: <b>${escapeHtml(grp.shift)}</b>
                 </div>
               </div>
               <div style="text-align:right;">
@@ -2242,12 +2860,12 @@
             ${grp.hasPastData ? `
               <div style="background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); color:#fbbf24; border-radius:8px; padding:6px 10px; font-size:11.5px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
                 <i class="fa-solid fa-arrows-split-up-and-left"></i>
-                <span>Đã ghi nhận trước đó: <b>${grp.previousQty} ${unitStr}</b> &rarr; Tự động gộp cộng dồn thành: <b>${grp.totalAccumulatedQty} ${unitStr}</b></span>
+                <span>${t("modal_previously_recorded")} <b>${grp.previousQty} ${unitStr}</b> &rarr; ${t("modal_auto_merged")} <b>${grp.totalAccumulatedQty} ${unitStr}</b></span>
               </div>
             ` : ''}
 
             <div style="margin-top:6px; border-top:1px dashed rgba(255,255,255,0.08); padding-top:6px;">
-              <span style="font-size:11px; color:#94a3b8; margin-right:4px;">Chi tiết ${isCpMode ? "mẻ" : "size"}:</span>
+              <span style="font-size:11px; color:#94a3b8; margin-right:4px;">${t("modal_batch_detail")} ${isCpMode ? t("modal_batch_suffix") : t("modal_size_suffix")}:</span>
               ${sizeBadges}
             </div>
           </div>
@@ -2258,26 +2876,26 @@
         <div style="background:#090e1a; padding:12px 14px; border-radius:12px; margin-bottom:12px; border:1px solid var(--card-border);">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>
-              <div style="font-size:11.5px; color:var(--text-muted);">${isCpMode ? "Khối lượng quét đợt này" : "Sản lượng quét đợt này"}</div>
+              <div style="font-size:11.5px; color:var(--text-muted);">${isCpMode ? t("modal_batch_new_cp") : t("modal_batch_new_ip")}</div>
               <div style="font-weight:900; color:var(--accent); font-size:18px; font-family:var(--font-mono);">
-                ${totalNewQty} ${unitStr} <span style="font-size:12px; color:#94a3b8; font-weight:600;">(${state.stagingScans.length} tem)</span>
+                ${totalNewQty} ${unitStr} <span style="font-size:12px; color:#94a3b8; font-weight:600;">(${state.stagingScans.length} ${t("badge_count_suffix").trim()})</span>
               </div>
             </div>
             <div style="text-align:right;">
-              <div style="font-size:11.5px; color:var(--text-muted);">Tổng lũy kế sau khi gộp</div>
+              <div style="font-size:11.5px; color:var(--text-muted);">${t("modal_accumulated_total")}</div>
               <div style="font-weight:900; color:var(--success); font-size:18px; font-family:var(--font-mono);">
                 ${totalAccumulatedAll} ${unitStr}
               </div>
             </div>
           </div>
           <div style="font-size:11.5px; color:var(--text-muted); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08);">
-            Phân hệ: <b style="color:${isCpMode ? '#c084fc' : '#38bdf8'};">${isCpMode ? "CP SCAN (Compound)" : "IP SCAN (Phylon)"}</b> | Người thực hiện: <b>${escapeHtml((state.currentUser && state.currentUser.username) || "Operator")}</b> | Ca trực: <b>${escapeHtml(state.currentShift)}</b>
+            ${t("col_division", "Phân hệ")}: <b style="color:${isCpMode ? '#c084fc' : '#38bdf8'};">${isCpMode ? "CP SCAN (Compound)" : "IP SCAN (Phylon)"}</b> | ${t("modal_operator")}: <b>${escapeHtml((state.currentUser && state.currentUser.username) || "Operator")}</b> | ${t("modal_shift")}: <b>${escapeHtml(state.currentShift)}</b>
           </div>
         </div>
 
         <div style="font-weight:700; margin-bottom:8px; font-size:12.5px; color:#ffffff; display:flex; align-items:center; justify-content:space-between;">
-          <span>Tổng hợp theo Model Code, Pantone${isCpMode ? ", Ngăn" : ""}, Ngày và Ca trực:</span>
-          <span style="font-size:11.5px; color:var(--accent); font-weight:800;">${groups.length} nhóm chỉ tiêu</span>
+          <span>${t("modal_group_summary")}</span>
+          <span style="font-size:11.5px; color:var(--accent); font-weight:800;">${groups.length} ${t("modal_group_count")}</span>
         </div>
 
         <div style="max-height:280px; overflow-y:auto; padding-right:2px; margin-bottom:12px;">
@@ -2296,11 +2914,11 @@
     async function executeCommitScans() {
       const btn = document.getElementById("btnConfirmCommit");
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đồng bộ dữ liệu vào hệ thống...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + t("modal_saving");
 
       const username = (state.currentUser && state.currentUser.username) || "Operator";
       const isCpMode = (state.division === "CP");
-      const unitStr = isCpMode ? "kg" : "đôi";
+      const unitStr = isCpMode ? t("unit_kg") : t("unit_pairs");
       const groups = aggregateStagingScans();
       const totalNewQty = Math.round(groups.reduce((sum, g) => sum + g.newQty, 0) * 10) / 10;
 
@@ -2370,18 +2988,18 @@
           closeCommitModal();
 
           playBeep(true);
-          showToast(data.message || `Đã ghi nhận thành công ${savedCount} tem (${totalNewQty} ${unitStr}) vào hệ thống!`, "success");
+          showToast(data.message || t("commit_success").replace("{0}", savedCount).replace("{1}", totalNewQty).replace("{2}", unitStr), "success");
         } else {
-          alert("Lỗi khi ghi nhận dữ liệu: " + (data.message || "Máy chủ không phản hồi."));
+          alert("Lỗi: " + (data.message || "Máy chủ không phản hồi."));
           playBeep(false);
         }
       } catch (err) {
         console.error("executeCommitScans error:", err);
-        alert("Không thể kết nối đến máy chủ hệ thống sản xuất: " + (err.message || err));
+        alert(t("login_network_error") + ": " + (err.message || err));
         playBeep(false);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Xác Nhận Lưu Dữ Liệu';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> ' + t("modal_btn_confirm");
       }
     }
 
