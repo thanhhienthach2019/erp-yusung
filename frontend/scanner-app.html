@@ -1095,7 +1095,7 @@
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiPlanningsDesk" style="color:var(--accent);">0</div>
-            <div class="kpi-tile-label">Lệnh Sản Xuất</div>
+            <div class="kpi-tile-label">Model Code</div>
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiLastScanDesk" style="color:var(--warning); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
@@ -1114,7 +1114,7 @@
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiPlanningsMob" style="color:var(--accent);">0</div>
-            <div class="kpi-tile-label">Lệnh Sản Xuất</div>
+            <div class="kpi-tile-label">Model Code</div>
           </div>
           <div class="kpi-tile">
             <div class="kpi-tile-value" id="kpiLastScanMob" style="color:var(--warning); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">-</div>
@@ -1149,7 +1149,8 @@
                 <tr>
                   <th style="width:36px;">#</th>
                   <th>Mã Tem (Barcode ID)</th>
-                  <th>Lệnh Sản Xuất (Planning)</th>
+                  <th>Model Code</th>
+                  <th>Pantone</th>
                   <th>Size</th>
                   <th>Ca Làm Việc</th>
                   <th>Số Lượng</th>
@@ -1159,7 +1160,7 @@
               </thead>
               <tbody id="stagingTableBody">
                 <tr>
-                  <td colspan="8" class="empty-state">
+                  <td colspan="9" class="empty-state">
                     <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
                     Chưa có tem nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!
                   </td>
@@ -1627,24 +1628,38 @@
       state.lastScannedText = rawBarcode;
       state.lastScannedAt = now;
 
-      // Phân tích Barcode: IP|PLANNING_CODE|SIZE|SHIFT|DATE|QTY|BARCODE_ID
+      // Phân tích Barcode:
+      // Định dạng mã vạch tự do: DIVISION|MODEL_CODE|SIZE|SHIFT|DATE|QTY|BARCODE_ID|PANTONE_CODE|SEPARATOR
+      // (Ví dụ: IP|ON123|7|Ca A|2026-10-22|30|BC261022-A1B2-0001|19-4007|A)
+      // Hoặc 7 phần: IP|ON123|7|Ca A|2026-10-22|30|BC261022-A1B2-0001
+      // Hoặc định dạng cũ: IP|PLANNING_CODE|SIZE|SHIFT|DATE|QTY|BARCODE_ID
       const parts = rawBarcode.split('|');
-      let planningCode = "";
+      let division = "IP";
+      let modelCode = "";
+      let pantoneCode = "";
+      let separator = "";
       let size = "Standard";
-      let shift = state.currentShift;
-      let productDate = state.productDate;
+      let shift = state.currentShift || "Ca A";
+      let productDate = state.productDate || new Date().toISOString().slice(0, 10);
       let qty = 1;
       let barcodeId = rawBarcode;
 
-      if (parts.length >= 6 && parts[0] === 'IP') {
-        planningCode = parts[1].trim();
+      if (parts.length >= 6 && (parts[0].toUpperCase() === 'IP' || parts[0].toUpperCase() === 'SD')) {
+        division = parts[0].trim().toUpperCase();
+        modelCode = parts[1].trim().toUpperCase();
         size = parts[2].trim();
-        shift = state.currentShift || parts[3] || "Ca A";
-        productDate = state.productDate || parts[4] || new Date().toISOString().slice(0, 10);
+        shift = (parts[3] && parts[3].trim()) ? parts[3].trim() : (state.currentShift || "Ca A");
+        productDate = (parts[4] && parts[4].trim()) ? parts[4].trim() : (state.productDate || new Date().toISOString().slice(0, 10));
         qty = Number(parts[5]) || 1;
         barcodeId = parts[6] ? parts[6].trim() : rawBarcode;
+        if (parts.length >= 8 && parts[7] && parts[7].trim() !== '-') {
+          pantoneCode = parts[7].trim().toUpperCase();
+        }
+        if (parts.length >= 9 && parts[8] && parts[8].trim() !== '-') {
+          separator = parts[8].trim().toUpperCase();
+        }
       } else {
-        planningCode = rawBarcode;
+        modelCode = rawBarcode;
         size = "Standard";
         qty = 1;
         barcodeId = rawBarcode;
@@ -1672,7 +1687,11 @@
       state.stagingScans.unshift({
         barcodeId: barcodeId,
         rawBarcode: rawBarcode,
-        planningCode: planningCode,
+        division: division,
+        modelCode: modelCode,
+        pantoneCode: pantoneCode,
+        separator: separator,
+        planningCode: modelCode,
         size: size,
         shift: shift,
         productDate: productDate,
@@ -1682,7 +1701,7 @@
       });
 
       updateUI();
-      showToast("Đã quét: " + planningCode + " (Size " + size + " - " + qty + " đôi)", "success");
+      showToast("Đã quét: " + modelCode + (pantoneCode ? " (" + pantoneCode + ")" : "") + " - Size " + size + " (" + qty + " đôi)", "success");
 
       const gunInput = document.getElementById("inputGunBarcode");
       if (gunInput) {
@@ -1727,23 +1746,24 @@
       const lblBottomPlannings = document.getElementById("lblBottomPlannings");
 
       let totalPairs = 0;
-      const planningSet = new Set();
+      const modelSet = new Set();
 
       state.stagingScans.forEach(item => {
         totalPairs += (Number(item.qty) || 1);
-        if (item.planningCode) planningSet.add(item.planningCode);
+        const mKey = item.modelCode || item.planningCode;
+        if (mKey) modelSet.add(mKey);
       });
 
       // Update KPIs
       totalPairsDesk.innerText = totalPairs;
       totalPairsMob.innerText = totalPairs;
-      planningsDesk.innerText = planningSet.size;
-      planningsMob.innerText = planningSet.size;
+      planningsDesk.innerText = modelSet.size;
+      planningsMob.innerText = modelSet.size;
       badgeCount.innerText = state.stagingScans.length + " tem";
 
       if (state.stagingScans.length > 0) {
         const latest = state.stagingScans[0];
-        const latestTxt = latest.planningCode + " (" + latest.size + " - " + latest.qty + "đ)";
+        const latestTxt = (latest.modelCode || latest.planningCode) + " (" + latest.size + " - " + latest.qty + "đ)";
         lastScanDesk.innerText = latestTxt;
         lastScanMob.innerText = latestTxt;
       } else {
@@ -1754,13 +1774,13 @@
       // Update Action Button Labels
       lblCommitDesk.innerText = "GHI NHẬN SẢN LƯỢNG (" + totalPairs + " ĐÔI)";
       lblBottomPairs.innerText = totalPairs + " đôi";
-      lblBottomPlannings.innerText = planningSet.size + " Lệnh Sản Xuất";
+      lblBottomPlannings.innerText = modelSet.size + " Model Code";
 
       // Render Empty State
       if (state.stagingScans.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="8" class="empty-state">
+            <td colspan="9" class="empty-state">
               <i class="fa-solid fa-barcode" style="font-size:28px; opacity:0.3; margin-bottom:6px; display:block;"></i>
               Chưa có tem nào trong danh sách. Hướng camera vào mã tem hoặc bấm cò súng quét!
             </td>
@@ -1782,7 +1802,8 @@
           <tr>
             <td style="color:var(--text-muted); font-weight:700;">${state.stagingScans.length - index}</td>
             <td style="font-family:var(--font-mono); font-weight:700; color:var(--accent);">${escapeHtml(item.barcodeId)}</td>
-            <td style="font-weight:700; color:#ffffff;">${escapeHtml(item.planningCode)}</td>
+            <td style="font-weight:700; color:#ffffff;">${escapeHtml(item.modelCode || item.planningCode)}</td>
+            <td style="color:#94a3b8; font-size:12px;">${escapeHtml(item.pantoneCode || '-')}</td>
             <td><span class="tag-size">${escapeHtml(item.size)}</span></td>
             <td>${escapeHtml(item.shift)}</td>
             <td><span class="tag-qty">${item.qty} đôi</span></td>
@@ -1803,12 +1824,15 @@
         cardsHtml += `
           <div class="staging-card-item">
             <div class="card-item-main">
-              <div class="card-item-plan">${escapeHtml(item.planningCode)}</div>
+              <div class="card-item-plan">
+                ${escapeHtml(item.modelCode || item.planningCode)}
+                ${item.pantoneCode ? `<span style="font-size:11px; font-weight:600; color:#38bdf8; margin-left:6px; background:rgba(56,189,248,0.12); padding:2px 6px; border-radius:4px;">${escapeHtml(item.pantoneCode)}</span>` : ''}
+              </div>
               <div class="card-item-tags">
                 <span class="tag-size">Size ${escapeHtml(item.size)}</span>
                 <span class="tag-qty">${item.qty} đôi</span>
                 <span class="tag-meta"><i class="fa-regular fa-clock me-1"></i>${escapeHtml(item.scanTime)}</span>
-                <span class="tag-meta"><i class="fa-solid fa-calendar-day me-1"></i>${escapeHtml(item.productDate)}</span>
+                <span class="tag-meta"><i class="fa-solid fa-calendar-day me-1"></i>${escapeHtml(item.productDate)} (${escapeHtml(item.shift)})</span>
               </div>
             </div>
             <button class="btn-delete-item" onclick="removeStagingItem(${index})" title="Xóa tem này">
@@ -1839,8 +1863,7 @@
 
     // ========================================================
     // PRODUCTION LEDGER & AGGREGATION ENGINE
-    // Gộp theo Planning Code + Product Date + Ca Làm Việc
-    // Tự động gộp cộng dồn với dữ liệu đã lưu trước đó trong ca
+    // Gộp theo Model Code + Pantone Code + Product Date + Ca Làm Việc
     // ========================================================
     const LEDGER_STORAGE_KEY = "yusung_scanner_production_ledger";
 
@@ -1861,8 +1884,9 @@
       }
     }
 
-    function getLedgerGroupKey(planningCode, productDate, shift) {
-      return String(planningCode || "UNKNOWN").trim() + "___" +
+    function getLedgerGroupKey(modelCode, pantoneCode, productDate, shift) {
+      return String(modelCode || "UNKNOWN").trim().toUpperCase() + "___" +
+             String(pantoneCode || "").trim().toUpperCase() + "___" +
              String(productDate || "").trim() + "___" +
              String(shift || "Ca A").trim();
     }
@@ -1872,12 +1896,13 @@
       const groupMap = new Map();
 
       state.stagingScans.forEach(item => {
-        const plan = (item.planningCode || "UNKNOWN").trim();
+        const mdl = (item.modelCode || item.planningCode || "UNKNOWN").trim().toUpperCase();
+        const pan = (item.pantoneCode || "").trim().toUpperCase();
         const pDate = (item.productDate || state.productDate).trim();
         const shift = (item.shift || state.currentShift).trim();
         const size = (item.size || "Standard").trim();
         const qty = Number(item.qty) || 1;
-        const key = getLedgerGroupKey(plan, pDate, shift);
+        const key = getLedgerGroupKey(mdl, pan, pDate, shift);
 
         if (!groupMap.has(key)) {
           // Tra cứu dữ liệu đã lưu trước đó trong ca (ví dụ scan 2, 3 tiếng trước)
@@ -1888,7 +1913,9 @@
 
           groupMap.set(key, {
             key: key,
-            planningCode: plan,
+            modelCode: mdl,
+            pantoneCode: pan,
+            planningCode: mdl,
             productDate: pDate,
             shift: shift,
             newQty: 0,
@@ -1950,11 +1977,12 @@
           <div style="background:#090e1a; border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-bottom:10px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; gap:8px;">
               <div>
-                <div style="font-weight:800; font-size:13.5px; color:#ffffff;">
-                  <i class="fa-solid fa-clipboard-list text-accent me-1"></i> ${escapeHtml(grp.planningCode)}
+                <div style="font-weight:800; font-size:14px; color:#ffffff;">
+                  <i class="fa-solid fa-cube text-accent me-1"></i> Model: <b>${escapeHtml(grp.modelCode)}</b>
+                  ${grp.pantoneCode ? `<span style="background:rgba(56,189,248,0.15); color:#38bdf8; font-size:11.5px; padding:2px 7px; border-radius:4px; margin-left:6px; font-family:var(--font-mono);">${escapeHtml(grp.pantoneCode)}</span>` : ''}
                 </div>
                 <div style="font-size:11.5px; color:#94a3b8; margin-top:2px;">
-                  <i class="fa-regular fa-calendar-days me-1"></i> Ngày: <b>${escapeHtml(grp.productDate)}</b> • Ca: <b>${escapeHtml(grp.shift)}</b>
+                  <i class="fa-regular fa-calendar-days me-1"></i> Ngày SX: <b>${escapeHtml(grp.productDate)}</b> • Ca: <b>${escapeHtml(grp.shift)}</b>
                 </div>
               </div>
               <div style="text-align:right;">
@@ -2000,7 +2028,7 @@
         </div>
 
         <div style="font-weight:700; margin-bottom:8px; font-size:12.5px; color:#ffffff; display:flex; align-items:center; justify-content:space-between;">
-          <span>Tổng hợp theo Lệnh Sản Xuất, Ngày và Ca trực:</span>
+          <span>Tổng hợp theo Model Code, Pantone, Ngày và Ca trực:</span>
           <span style="font-size:11.5px; color:var(--accent); font-weight:800;">${groups.length} nhóm chỉ tiêu</span>
         </div>
 
@@ -2010,7 +2038,7 @@
 
         <div style="font-size:11.5px; color:#94a3b8; background:rgba(14, 165, 233, 0.08); padding:10px 12px; border-radius:10px; border-left:3px solid var(--accent); line-height:1.5;">
           <i class="fa-solid fa-shield-halved text-accent me-1"></i>
-          Hệ thống sẽ tự động gộp số lượng theo từng Lệnh sản xuất, Ngày và Ca làm việc; liên kết chi tiết đơn hàng (Khách hàng, Model, Pantone) và cập nhật nhật ký mã tem chính xác vào cơ sở dữ liệu.
+          Hệ thống sẽ tự động gộp số lượng theo Model Code, Pantone, Size và Ca làm việc; sau đó phân bổ ưu tiên vào bảng <b>IP_PRODUCTION</b> theo <b>Tờ gạch kế hoạch</b> (từng Khách hàng, Fixed ETD sớm nhất) và tự động trừ dần vào <b>số lượng Remain</b> của Production Planning.
         </div>
       `;
 
@@ -2037,6 +2065,8 @@
         username: username,
         scanEntries: state.stagingScans,
         summaryGroups: groups.map(g => ({
+          modelCode: g.modelCode,
+          pantoneCode: g.pantoneCode,
           planningCode: g.planningCode,
           productDate: g.productDate,
           shift: g.shift,
@@ -2047,7 +2077,7 @@
           barcodes: g.newBarcodes
         })),
         mergeConfig: {
-          mergeBy: ["planningCode", "productDate", "shift"],
+          mergeBy: ["modelCode", "pantoneCode", "productDate", "shift"],
           mergePastData: true
         }
       };
@@ -2066,6 +2096,8 @@
           const ledger = getProductionLedger();
           groups.forEach(g => {
             ledger[g.key] = {
+              modelCode: g.modelCode,
+              pantoneCode: g.pantoneCode,
               planningCode: g.planningCode,
               productDate: g.productDate,
               shift: g.shift,
